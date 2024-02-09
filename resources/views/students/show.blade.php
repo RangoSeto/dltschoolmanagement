@@ -184,7 +184,7 @@
                                 <div class="acctitle shown"> Email</div>
                                 <div class="acccontent">
                                     <div class="col-md-12 py-3">
-                                        <form action="" method="" >
+                                        <form action="{{route('students.mailbox')}}" method="POST" >
                                             @csrf
                                             <div class="row">
                                                 
@@ -194,11 +194,11 @@
                                                 <div class="col-md-6 form-group mb-3">
                                                     <input type="text" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded:0" placeholder="Subject:" />
                                                 </div>
-                                                <div class="col-md-6 form-group mb-3">
+                                                <div class="col-md-12 form-group mb-3">
                                                     <textarea name="cmpcontent" id="cmpcontent"class="form-control form-control-sm border-0 rounded:0" rows="3" style="resize: none" placeholder="Your message here..."></textarea>
                                                 </div>
 
-                                                <div class="col-md-6 d-flex justify-content-end align-items-end">
+                                                <div class="col-md-12 d-flex justify-content-end align-items-end">
                                                     <button type="submit" class="btn btn-secondary btn-sm rounded-0">Send</button>
                                                 </div>
 

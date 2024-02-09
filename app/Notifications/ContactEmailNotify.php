@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ContactEmailNotify extends Notification
+class ContactEmailNotify extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -57,3 +57,15 @@ class ContactEmailNotify extends Notification
         ];
     }
 }
+
+
+// Email ပို့ရင် loading time မကြာအောင်လုပ်တာ
+// php artisan queue:table
+// php artisan migrate 
+// .env > QUEUE_CONNECTION=database 
+// Note: class ContactEmailNotify extends Notification implements ShouldQueue
+// implements ShouldQueue (use Illuminate\Contracts\Queue\ShouldQueue;)
+
+// php artisan queue:work       // must run after queue
+// or
+// php artisan queue:listen     // must run after queue
