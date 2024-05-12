@@ -5,6 +5,9 @@
         {{-- Application Name  --}}
         <title>{{ config('app.name') }}</title>
 
+        <meta charset="utf-8" />
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
+
          <!--link fav icon-->
          <link href="{{asset('assets/img/fav/favicon.png')}}" rel="icon" type="image/png" size="16x16" />
 

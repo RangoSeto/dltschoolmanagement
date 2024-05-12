@@ -17,7 +17,7 @@ class MailBoxJob implements ShouldQueue
 
     protected $to;
     protected $subject;
-    protected $content;
+    protected $content; 
 
 
     /**

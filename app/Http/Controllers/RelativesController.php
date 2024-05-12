@@ -7,6 +7,8 @@ use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class RelativesController extends Controller
 {
@@ -72,5 +74,19 @@ class RelativesController extends Controller
         $relative->save();
 
         return response()->json(["success"=>"Status Change Successfully"]);
+    }
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Relative::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
     }
 }

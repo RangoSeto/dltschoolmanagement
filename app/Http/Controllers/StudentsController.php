@@ -16,6 +16,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class StudentsController extends Controller
 {
@@ -120,7 +122,7 @@ class StudentsController extends Controller
 
 
         // =>Using Job Method 1 (to MailBox)
-        // dispatch(new MailBoxJob($subject,$content));
+        // dispatch(new MailBoxJob($to,$subject,$content));
 
 
         // => Method 1 ( to MailBox )
@@ -138,6 +140,17 @@ class StudentsController extends Controller
         dispatch(new StudentMailBoxJob($data));
 
         return redirect()->back();
+    }
+
+    public function bulkdeletes(Request $request){
+        try{
+            $getselectedids = $request->selectedids;
+            Student::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
     }
 
 }

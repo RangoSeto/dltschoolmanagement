@@ -2,16 +2,16 @@
 @section('caption','Tag List')
 @section('content')
 
-    
+
     <!--Start Page Content Area-->
 
     <div class="container-fluid">
 
         <div class="col-md-12">
             <form action="{{route('tags.store')}}" method="POST">
-    
+
                 {{ csrf_field() }}
-        
+
                 <div class="row align-items-end">
                     <div class="col-md-4 form-group">
                         <label for="name">Name <span class="text-danger">*</span></label>
@@ -29,25 +29,30 @@
                             @endforeach
                         </select>
                     </div>
-        
+
                     <div class="col-md-4">
                         <button type="reset" class="btn btn-secondary btn-sm rounded-0">Cancel</button>
                         <button type="submit" class="btn btn-primary btn-sm rounded-0 ms-3">Submit</button>
                     </div>
-        
-        
+
+
                 </div>
-        
+
             </form>
         </div>
 
         <hr/>
+
+        <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0 mb-3">Bulk Delete</a>
 
         <div class="col-md-12">
 
             <table id="mydata" class="table table-sm table-hover border">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                        </th>
                         <th>No</th>
                         <th>Name</th>
                         <th>Status</th>
@@ -59,7 +64,10 @@
                 </thead>
                 <tbody>
                     @foreach($tags as $idx=>$tag)
-                    <tr>
+                    <tr id="delete_{{$tag->id}}">
+                        <td>
+                            <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$tag->id}}" />
+                        </td>
                         {{-- <td>{{++$idx}}</td> --}}
                         {{-- <td>{{$idx+1}}</td> --}}
                         <td>{{$idx+ $tags->firstItem()}}</td>
@@ -87,7 +95,7 @@
 
             {{-- {{$tags->links()}}  --}}{{-- သု ံးထားတာက bs5မလိုြ--}}
             {{$tags->links('pagination::bootstrap-4')}}
-            
+
 
         </div>
 
@@ -109,10 +117,10 @@
 
                         <div class="modal-body">
                             <form id="formaction" action="" method="POST">
-    
+
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
-                        
+
                                 <div class="row align-items-end">
                                     <div class="col-md-7 form-group">
                                         <label for="editname">Name <span class="text-danger">*</span></label>
@@ -125,16 +133,16 @@
                                             @foreach($statuses as $status)
                                             <option value="{{$status['id']}}">{{$status['name']}}</option>
                                             @endforeach
-                                        </select> 
+                                        </select>
                                     </div>
-                        
+
                                     <div class="col-md-2">
                                         <button type="submit" class="btn btn-primary btn-sm rounded-0">Update</button>
                                     </div>
-                        
-                        
+
+
                                 </div>
-                        
+
                             </form>
                         </div>
 
@@ -159,6 +167,9 @@
 
 @section('scripts')
 
+    {{-- sweet alert js1--}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript">
 
         $(document).ready(function(){
@@ -179,7 +190,7 @@
             // End Delete Item
 
 
-            // Start Edit Form 
+            // Start Edit Form
             $(document).on('click','.editform',function(e){
 
                 $('#editname').val($(this).data('name'));
@@ -191,7 +202,7 @@
                 e.preventDefault();
 
             });
-            // End Edit Form 
+            // End Edit Form
 
 
             // Start Change Btn
@@ -206,11 +217,88 @@
                     data:{"id":getid,"status_id":setstatus},
                     success:function(response){
                         console.log(response.success);
+
+                        Swal.fire({
+                            title: "Updated!",
+                            text: "Updated Successfully!",
+                            icon: "success"
+                        });
                     }
                 });
             });
             // End Change Btn
 
+
+
+            // Start Bulk Delete 
+
+            $("#selectalls").click(function(){
+                $(".singlechecks").prop('checked',$(this).prop('checked'));
+            });
+
+            $("#bulkdelete-btn").click(function(){
+                let getselectedids = [];
+
+                // console.log($("input:checkbox[name=singlechecks]:checked"));
+
+                $("input:checkbox[name='singlechecks']:checked").each(function(){
+                    getselectedids.push($(this).val());
+                });
+
+                console.log(getselectedids);
+
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `You won't be able to revert id !`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // data remove
+                        $.ajax({
+                            url:'{{route("tags.bulkdeletes")}}',
+                            type:"DELETE",
+                            dataType:"json",
+                            data:{
+                                selectedids:getselectedids,
+                                _token:'{{csrf_token()}}'
+                            },
+                            success:function(response){
+                                console.log(response); // 1
+
+                                if(response){
+                                    // ui remove
+                                    $.each(getselectedids,function(key,val){
+                                        $(`#delete_${val}`).remove();
+                                    });
+
+
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                }
+                            },
+                            error:function(response){
+                                console.log("Error : ",response);
+                            }
+                        });
+
+
+                    }
+                });
+
+                
+
+            });
+
+            // End Bulk Delete 
 
         });
 

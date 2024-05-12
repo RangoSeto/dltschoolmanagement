@@ -60,29 +60,35 @@
         <hr/>
 
         <div class="col-md-12">
-            <form action="" method="">
-                <div class="row justify-content-end">
+            <div>
+                <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+            </div>
 
-                    <div class="col-md-2 col-sm-6 mb-2">
-                        <div class="form-group">
-                            <select name="filter" id="filter" class="form-control form-control-sm rounded-0">
-                                @foreach($filterposts as $id=>$name)
-                                  <option value="{{$id}}" {{$id == request('filter') ? 'selected' : ''}}>{{$name}}</option>
-                                @endforeach
-                            </select>
+            <div>
+                <form action="" method="">
+                    <div class="row justify-content-end">
+    
+                        <div class="col-md-2 col-sm-6 mb-2">
+                            <div class="form-group">
+                                <select name="filter" id="filter" class="form-control form-control-sm rounded-0">
+                                    @foreach($filterposts as $id=>$name)
+                                      <option value="{{$id}}" {{$id == request('filter') ? 'selected' : ''}}>{{$name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="col-md-2 col-sm-6 mb-2">
-                        <div class="input-group">
-                            <input type="text" name="search" id="search" class="form-control form-control-sm rounded-0" value="{{request('search')}}" placeholder="Search..." />
-                            <button type="button" id="btn-clear" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i></button>
-                            <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+    
+                        <div class="col-md-2 col-sm-6 mb-2">
+                            <div class="input-group">
+                                <input type="text" name="search" id="search" class="form-control form-control-sm rounded-0" value="{{request('search')}}" placeholder="Search..." />
+                                <button type="button" id="btn-clear" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i></button>
+                                <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                            </div>
                         </div>
+    
                     </div>
-
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
         
@@ -92,6 +98,9 @@
             <table id="mydata" class="table table-sm table-hover border">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                        </th>
                         <th>No</th>
                         <th>Class</th>
                         <th>URl</th>
@@ -104,7 +113,10 @@
                 </thead>
                 <tbody>
                     @foreach($edulinks as $idx=>$edulink)
-                    <tr>
+                    <tr id="delete_{{$edulink->id}}">
+                        <td>
+                            <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$edulink->id}}" />
+                        </td>
                         <td>{{$idx+ $edulinks->firstItem()}}</td>
                         <td><a href="{{route('posts.show',$edulink->post_id)}}">{{$edulink->post['title']}}</a></td>
                         <td><a href="javascript:void(0);" class="link-btns" data-url="{{$edulink->url}}" title="Copy Link">{{Str::limit($edulink->url,30)}}</a></td>
@@ -203,6 +215,8 @@
 @endsection
 
 @section('scripts')
+{{-- sweet alert js1--}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
 
@@ -247,7 +261,7 @@
 
 
         // Start Delete Item
-        document.querySelectorAll('.delete-btns').foreach(function(deletebtn){
+        document.querySelectorAll('.delete-btns').forEach(function(deletebtn){
             deletebtn.addEventListener('click',function(){
                 var getidx = this.getAttribute('data-idx');
                 if(confirm(`Are you sure !!! You want to Delete ${getidx} ?`)){
@@ -304,6 +318,78 @@
                 navigator.clipboard.writeText(geturl);
             });
             // End link btn
+
+
+
+            // Start Bulk Delete 
+
+            $("#selectalls").click(function(){
+                $(".singlechecks").prop('checked',$(this).prop('checked'));
+            });
+
+            $("#bulkdelete-btn").click(function(){
+                let getselectedids = [];
+
+                // console.log($("input:checkbox[name=singlechecks]:checked"));
+
+                $("input:checkbox[name='singlechecks']:checked").each(function(){
+                    getselectedids.push($(this).val());
+                });
+
+                console.log(getselectedids);
+
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `You won't be able to revert id !`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // data remove
+                        $.ajax({
+                            url:'{{route("edulinks.bulkdeletes")}}',
+                            type:"DELETE",
+                            dataType:"json",
+                            data:{
+                                selectedids:getselectedids,
+                                _token:'{{csrf_token()}}'
+                            },
+                            success:function(response){
+                                console.log(response); // 1
+
+                                if(response){
+                                    // ui remove
+                                    $.each(getselectedids,function(key,val){
+                                        $(`#delete_${val}`).remove();
+                                    });
+
+
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                }
+                            },
+                            error:function(response){
+                                console.log("Error : ",response);
+                            }
+                        });
+
+
+                    }
+                });
+
+                
+
+            });
+
+            // End Bulk Delete 
 
         });
     </script>

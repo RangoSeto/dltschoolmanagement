@@ -31,7 +31,20 @@
                                 @if(!$post->checkenroll($userdata->id))
                                     <a href="#createmodal" class="w-100 btn btn-primary btn-sm rounded-0 me-2" data-bs-toggle="modal"> Enroll</a>
                                 @endif
-                                <button type="button" class="w-100 btn btn-outline-primary btn-sm rounded-0 me-2">Follow</button>
+
+
+                                @if($userdata->checkpostlike($post->id))
+                                    <form class="w-100" action="{{route('posts.unlike',$post->id)}}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0 me-2">UnLike</button>
+                                    </form>
+                                @else
+                                    <form class="w-100" action="{{route('posts.like',$post->id)}}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0 me-2">Like</button>
+                                    </form>
+                                @endif
+                                
                             </div>
 
                             <div class="mb-5">
@@ -131,13 +144,13 @@
                             </div>
 
                             <div class="mb-5">
-                                <p class="text-small text-muted text-uppercase mb-2">Contact Info</p>
+                                <p class="text-small text-muted text-uppercase mb-2">Other</p>
                                 
                                     <div class="row g-0 mb-2">
                                         <div class="col-auto me-2">
-                                            <i class="fas fa-info"></i>
+                                            <i class="fas fa-thumbs-up"></i>
                                         </div>
-                                        <div class="col">Sample Data</div>
+                                        <div class="col">{{$post->likes()->count()}}</div>
                                     </div>
 
                                     <div class="row g-0 mb-2">
@@ -179,7 +192,7 @@
                                 <div class="card rounded-0">
                                     <div class="card-body">
                                         <ul class="list-group chat-boxs">
-                                            @foreach($comments as $comment)
+                                            @forelse($comments as $comment)
                                                 <li class="list-group-item mt-2">
                                                     <div>
                                                         <p>{{$comment->description}}</p>
@@ -190,7 +203,11 @@
                                                     </div>
         
                                                 </li>
-                                            @endforeach
+
+                                                @empty 
+                                                <li class="list-group-item mt-2">No Comments Found</li>
+
+                                            @endforelse
                                         </ul>
                                     </div>
         

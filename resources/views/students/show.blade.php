@@ -28,8 +28,24 @@
                             </div>
 
                             <div class="w-100 d-flex flex-row justify-content-between mb-3">
+
                                 <button type="button" class="w-100 btn btn-primary btn-sm rounded-0 me-2">Like</button>
-                                <button type="button" class="w-100 btn btn-outline-primary btn-sm rounded-0">Follow</button>
+
+                                @if($userdata->id !== $student->user_id)
+                                    @if($userdata->checkuserfollowing($student->user_id))
+                                        <form class="w-100" action="{{route('users.unfollow',$student->user_id)}}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">UnFollow</button>
+                                        </form>
+                                    @else 
+                                        <form class="w-100" action="{{route('users.follow',$student->user_id)}}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Follow</button>
+                                        </form>
+                                    @endif
+                                @endif
+                                
+                                
                             </div>
 
                             <div class="mb-5">
@@ -181,7 +197,7 @@
 
                             <div class="accordion">
 		
-                                <div class="acctitle shown"> Email</div>
+                                <div class="acctitle"> Email</div>
                                 <div class="acccontent">
                                     <div class="col-md-12 py-3">
                                         <form action="{{route('students.mailbox')}}" method="POST" >

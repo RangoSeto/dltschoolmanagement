@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 use App\Models\Day;
 use App\Models\Dayable;
@@ -275,6 +277,21 @@ class PostsController extends Controller
 
         $post->delete();
         return redirect()->back();
+    }
+
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Day::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
     }
 }
 

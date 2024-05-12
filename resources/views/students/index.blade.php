@@ -12,9 +12,14 @@
 
             <hr/>
 
+            <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0 mb-3">Bulk Delete</a>
+
             <table id="mydata" class="table table-sm table-hover border">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                        </th>
                         <th>No</th>
                         <th>Reg Number</th>
                         <th>Name</th>
@@ -28,7 +33,10 @@
                 </thead>
                 <tbody>
                     @foreach($students as $idx=>$student)
-                    <tr>
+                    <tr id="delete_{{$student->id}}">
+                        <td>
+                            <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$student->id}}" />
+                        </td>
                         <td>{{++$idx}}</td>
                         <td><a href="{{route('students.show',$student->id)}}">{{$student->regnumber}}</a></td>
                         <td>{{$student->firstname}} {{$student->lastname}}</td>
@@ -66,6 +74,8 @@
 
     {{-- datatable css1 js1  --}}
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    {{-- sweet alert js1--}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -88,6 +98,73 @@
 
             // for mytable
             $('#mydata').DataTable();
+
+
+            // Start Bulk Delete 
+
+            $("#selectalls").click(function(){
+                $(".singlechecks").prop('checked',$(this).prop('checked'));
+            });
+
+            $("#bulkdelete-btn").click(function(){
+                let getselectedids = [];
+
+                $("input:checkbox[name='singlechecks']:checked").each(function(){
+                    getselectedids.push($(this).val());
+                });
+
+                console.log(getselectedids);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `You won't be able to revert id !`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // data remove
+                        $.ajax({
+                            url:'{{route("students.bulkdeletes")}}',
+                            type:"DELETE",
+                            dataType:"json",
+                            data:{
+                                selectedids:getselectedids,
+                                _token:'{{csrf_token()}}'
+                            },
+                            success:function(response){
+                                console.log(response); // 1
+
+                                if(response){
+                                    // ui remove
+                                    $.each(getselectedids,function(key,val){
+                                        $(`#delete_${val}`).remove();
+                                    });
+
+
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                }
+                            },
+                            error:function(response){
+                                console.log("Error : ",response);
+                            }
+                        });
+
+
+                    }
+                });
+
+            })
+
+            // End Bulk Delete 
+            
 
         });
     </script>

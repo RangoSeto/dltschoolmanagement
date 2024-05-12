@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 use Illuminate\Http\Request;
 
@@ -61,5 +63,20 @@ class StatusesController extends Controller
         $status = Status::findOrFail($id);
         $status->delete();
         return redirect()->back();
+    }
+
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Status::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
     }
 }

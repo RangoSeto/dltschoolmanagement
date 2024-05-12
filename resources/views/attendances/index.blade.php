@@ -18,7 +18,7 @@
                         @error('classdate')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-                        <input type="date" name="classdate" id="classdate" class="form-control form-control-sm rounded-0" value="{{old('classdate')}}">
+                        <input type="date" name="classdate" id="classdate" class="form-control form-control-sm rounded-0" value="{{old('classdate',$gettoday)}}">
                     </div>
 
                     <div class="col-md-3 form-group">
@@ -27,8 +27,9 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                         <select name="post_id" id="post_id" class="form-control form-control-sm rounded-0">
+                            
+                            <option disabled selected>Choose Class</option>
                             @foreach($posts as $post)
-                                <option disabled selected>Choose Class</option>
                                 {{-- <option value="{{$post['id']}}">{{$post['title']}}</option> --}} {{-- don't use[''] if you try with DB:: --}}
                                 <option value="{{$post->id}}">{{$post->title}}</option>
                             @endforeach
@@ -55,11 +56,17 @@
 
         <hr/>
 
+        <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0 mb-3">Bulk Delete</a>
+
+
         <div class="col-md-12">
 
             <table id="mydata" class="table table-sm table-hover border">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                        </th>
                         <th>No</th>
                         <th>Student ID</th>
                         <th>Class</th>
@@ -67,24 +74,23 @@
                         <th>By</th>
                         <th>Class Date</th>
                         <th>Created At</th>
-                        <th>Updated At</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($attendances as $idx=>$attendance)
-                    <tr>
+                    <tr id="delete_{{$attendance->id}}">
+                        <td>
+                            <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$attendance->id}}" />
+                        </td>
                         <td>{{++$idx}}</td>
                         <td>{{$attendance->student($attendance->user_id)}}</td>
                         <td>{{$attendance->post['title']}}</td>
                         <td>{{$attendance->attcode}}</td>
                         <td>{{$attendance['user']['name']}}</td>
+                        
                         <td>{{$attendance->classdate}}</td>
                         <td>{{$attendance->created_at->format('d M Y')}}</td>
-                        <td>{{$attendance->updated_at->format('d M Y')}}</td>
-                        <td>
-                            <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$attendance->id}}" data-attcode="{{$attendance->attcode}}" data-post_id="{{$attendance->post_id}}"><i class="fas fa-pen"></i></a>
-                        </td>
+                        
                     </tr>
                     @endforeach
                 </tbody>
@@ -162,6 +168,8 @@
 
     {{-- datatable css1 js1  --}}
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    {{-- sweet alert js1--}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
 
@@ -183,6 +191,77 @@
 
             // for mytable
             $('#mydata').DataTable();
+
+
+
+            // Start Bulk Delete 
+
+            $("#selectalls").click(function(){
+                $(".singlechecks").prop('checked',$(this).prop('checked'));
+            });
+
+            $("#bulkdelete-btn").click(function(){
+                let getselectedids = [];
+
+                // console.log($("input:checkbox[name=singlechecks]:checked"));
+
+                $("input:checkbox[name='singlechecks']:checked").each(function(){
+                    getselectedids.push($(this).val());
+                });
+
+                console.log(getselectedids);
+
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `You won't be able to revert id !`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // data remove
+                        $.ajax({
+                            url:'{{route("attendances.bulkdeletes")}}',
+                            type:"DELETE",
+                            dataType:"json",
+                            data:{
+                                selectedids:getselectedids,
+                                _token:'{{csrf_token()}}'
+                            },
+                            success:function(response){
+                                console.log(response); // 1
+
+                                if(response){
+                                    // ui remove
+                                    $.each(getselectedids,function(key,val){
+                                        $(`#delete_${val}`).remove();
+                                    });
+
+
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                }
+                            },
+                            error:function(response){
+                                console.log("Error : ",response);
+                            }
+                        });
+
+
+                    }
+                });
+                
+            });
+
+            // End Bulk Delete 
+
 
         });
     </script>

@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LeaveRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\LeaveNotify;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 
 use App\Models\Enroll;
@@ -100,8 +104,8 @@ class LeavesController extends Controller
 
         // Auery Builder(DB) can read/write acacess to notifications table (can't use Notification::)
         $type = "App\Notifications\LeaveNotify";
-        $getnoti = \DB::table('notifications')->where('notifiable_id',$user_id)->where('type',$type)->where('data->id',$id)->get();
-        DB::table('notifications')->where('id',$getnoti)->update(['read_at'=>now()]);
+        $getnoti = \DB::table('notifications')->where('notifiable_id',$user_id)->where('type',$type)->where('data->id',$id)->pluck('id');
+        \DB::table('notifications')->where('id',$getnoti)->update(['read_at'=>now()]);
 
         return view('leaves.show',["leave"=>$leave]);
     }
@@ -195,6 +199,21 @@ class LeavesController extends Controller
         }
 
         return redirect()->back();
+
+    }
+
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Leave::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
 
     }
 }

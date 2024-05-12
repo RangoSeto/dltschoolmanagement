@@ -12,35 +12,46 @@
             <hr/>
 
             <div class="col-md-12">
-                <form action="" method="">
-                    <div class="row justify-content-end">
-    
-                        <div class="col-md-2 col-sm-6 mb-2">
-                            <div class="form-group">
-                                <select name="filter" id="filter" class="form-control form-control-sm rounded-0">
-                                    @foreach($relatives as $id=>$name)
-                                      <option value="{{$id}}" {{$id == request('filter') ? 'selected' : ''}}>{{$name}}</option>
-                                    @endforeach
-                                </select>
+
+                <div>
+                    <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+                </div>
+
+                <div>
+                    <form action="" method="">
+                        <div class="row justify-content-end">
+        
+                            <div class="col-md-2 col-sm-6 mb-2">
+                                <div class="form-group">
+                                    <select name="filter" id="filter" class="form-control form-control-sm rounded-0">
+                                        @foreach($relatives as $id=>$name)
+                                          <option value="{{$id}}" {{$id == request('filter') ? 'selected' : ''}}>{{$name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-    
-                        <div class="col-md-2 col-sm-6 mb-2">
-                            <div class="input-group">
-                                <input type="text" name="search" id="search" class="form-control form-control-sm rounded-0" value="{{request('search')}}" placeholder="Search..." />
-                                <button type="button" id="btn-clear" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i></button>
-                                <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+        
+                            <div class="col-md-2 col-sm-6 mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="search" id="search" class="form-control form-control-sm rounded-0" value="{{request('search')}}" placeholder="Search..." />
+                                    <button type="button" id="btn-clear" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i></button>
+                                    <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                                </div>
                             </div>
+        
                         </div>
-    
-                    </div>
-                </form>
+                    </form>
+                </div>
+
             </div>
 
             <div class="col-md-12">
                 <table id="mydata" class="table table-sm table-hover border">
                     <thead>
                         <tr>
+                            <th>
+                                <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                            </th>
                             <th>Id</th>
                             <th>First Name</th>
                             <th>Last Name</th>
@@ -54,7 +65,10 @@
                     </thead>
                     <tbody>
                         @foreach($contacts as $idx=>$contact)
-                        <tr>
+                        <tr id="delete_{{$contact->id}}">
+                            <td>
+                                <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$contact->id}}" />
+                            </td>
                             <td>{{++$idx}}</td>
                             <td>{{$contact->firstname}}</td>
                             <td>{{$contact->lastname}}</td>
@@ -225,6 +239,9 @@
 
 @section('scripts')
 
+{{-- sweet alert js1--}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript">
 
         // Start Filter 
@@ -301,6 +318,76 @@
 
             });
             // End Edit Form
+
+            // Start Bulk Delete 
+
+            $("#selectalls").click(function(){
+                $(".singlechecks").prop('checked',$(this).prop('checked'));
+            });
+
+            $("#bulkdelete-btn").click(function(){
+                let getselectedids = [];
+
+                // console.log($("input:checkbox[name=singlechecks]:checked"));
+
+                $("input:checkbox[name='singlechecks']:checked").each(function(){
+                    getselectedids.push($(this).val());
+                });
+
+                console.log(getselectedids);
+
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `You won't be able to revert id !`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // data remove
+                        $.ajax({
+                            url:'{{route("contacts.bulkdeletes")}}',
+                            type:"DELETE",
+                            dataType:"json",
+                            data:{
+                                selectedids:getselectedids,
+                                _token:'{{csrf_token()}}'
+                            },
+                            success:function(response){
+                                console.log(response); // 1
+
+                                if(response){
+                                    // ui remove
+                                    $.each(getselectedids,function(key,val){
+                                        $(`#delete_${val}`).remove();
+                                    });
+
+
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                }
+                            },
+                            error:function(response){
+                                console.log("Error : ",response);
+                            }
+                        });
+
+
+                    }
+                });
+
+                
+
+            });
+
+            // End Bulk Delete 
 
 
         });

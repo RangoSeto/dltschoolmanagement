@@ -87,6 +87,10 @@
 				<script>toastr.info('{{session()->get('info')}}', 'Information')</script>
 			@endif
 
+			@if(session()->has('error'))
+				<script>toastr.error("{{session()->get('error')}}", 'Inconceivable')</script>
+			@endif
+
 			@if($errors)
 				@foreach($errors->all() as $error)
 					<script>toastr.error('{{$error}}','Warning!',{timeOut:3000})</script>

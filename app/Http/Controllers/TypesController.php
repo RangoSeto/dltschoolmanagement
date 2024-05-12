@@ -7,6 +7,8 @@ use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class TypesController extends Controller
 {
@@ -61,13 +63,24 @@ class TypesController extends Controller
         return redirect(route('types.index'));
     }
 
-    public function destroy(string $id)
-    {
-        $type = Type::findOrFail($id);
-        $type->delete();
-        return redirect()->back();
-    }
+    // public function destroy(string $id)
+    // {
+    //     $type = Type::findOrFail($id);
+    //     $type->delete();
 
+    //     session()->flash('info','Delete Successfully');
+    //     return redirect()->back();
+    // }
+
+
+    
+    public function destroy(Request $request)
+    {
+        $type = Type::findOrFail($request['id']);
+        $type->delete();
+
+        return response()->json(['success'=>"Delete Successfully."]);
+    }
 
 
     public function typestatus(Request $request){
@@ -76,6 +89,21 @@ class TypesController extends Controller
         $type->save();
 
         return response()->json(['success'=>"Status Change Successfully."]);
+    }
+
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Type::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
     }
 
 }

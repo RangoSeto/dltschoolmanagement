@@ -9,15 +9,15 @@ class Attendance extends Model
 {
     use HasFactory;
 
-
-    protected $table = "attendances";
-    protected $primaryKey = "id";
+    protected $table = 'attendances';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'classdate',
         'post_id',
         'attcode',
         'user_id'
     ];
+
 
     public function post(){
         return $this->belongsTo(Post::class);
@@ -39,7 +39,8 @@ class Attendance extends Model
         // }
 
 
-        // Method 2 
+
+        // Method 2
         $students = Student::where('user_id',$userid)->get()->pluck('regnumber');
         // dd($students);
         foreach($students as $student){
@@ -49,8 +50,16 @@ class Attendance extends Model
 
     }
 
+
     public function studenturl(){
         return Student::where('user_id',$this->user_id)->get(['students.id'])->first();
     }
+
+    public function checkattcode($classdate,$postid,$attcode){
+        $checkresult = \DB::table('attcodegenerators')->whereDate('classdate',$classdate)->where('post_id',$postid)->where('attcode',$attcode)->where('status_id',3)->exists();
+        // dd($checkresult);
+        return $checkresult;
+    }
+
 
 }

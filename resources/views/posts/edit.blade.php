@@ -303,7 +303,9 @@
         // Start Day Action
         $('.dayactions').click(function(){
             
-            var checkboxs = $("input[type='checkbox']");
+            // var checkboxs = $("input[type='checkbox']");
+            var checkboxs = $(".dayactions");
+
             // console.log(checkboxs);
 
             var checked = checkboxs.filter(':checked').map(function(){

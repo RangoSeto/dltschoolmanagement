@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class ContactsController extends Controller
 {
@@ -31,7 +33,7 @@ class ContactsController extends Controller
             'firstname' => 'required|min:3|max:50',
             'lastname' => 'max:50',
             'birthday'=>'nullable',
-            'relative_id'=>'nullable'
+            'relative_id '=>'nullable'
         ]);
 
         $user = Auth::user();
@@ -93,10 +95,26 @@ class ContactsController extends Controller
         session()->flash('info','Delete Successfully');
         return redirect()->back();
     }
+
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Contact::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
+    }
+
 }
 
 
-// =>Gmail Integrate (1.post forward/ 2.)
+// =>Gmail Integrate (1.post forward/ 2.app password(virtual password))
 // Gmail > Setting Icon > See all settings > Forwarding and POP/IMAP > IMAP on 
 // Gamil > Mange your google accoung > secutitys > 2-step Verification > Get Started > App Passwords 
 // App Name = DLT Student Management Project

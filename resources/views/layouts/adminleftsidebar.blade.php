@@ -50,6 +50,7 @@
 	                            <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#advanceui"><i class="fas fa-users fa-md me-3"></i>Students <i class="fas fa-angle-left mores"></i></a>
 
 	                                <ul id="advanceui" class="collapse ps-2">
+	                                    <li><a href="{{route('attcodegenerators.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>All Generators</a></li>
 	                                    <li><a href="{{route('students.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>All Students</a></li>
 
 	                                </ul>
@@ -74,6 +75,8 @@
 	                                <ul id="chartelement" class="collapse ps-2">
 	                                    <li><a href="{{route('days.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Day</a></li>
 	                                    <li><a href="{{route('categories.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Categories</a></li>
+	                                    <li><a href="{{route('genders.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Gender</a></li>
+	                                    <li><a href="{{route('paymenttypes.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Payment Types</a></li>
 	                                    <li><a href="{{route('stages.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Stage</a></li>
 	                                    <li><a href="{{route('statuses.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Status</a></li>
 	                                    <li><a href="{{route('tags.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Tags</a></li>
@@ -86,11 +89,13 @@
 	                            <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#tableelement"><i class="fas fa-file-alt fa-md me-3"></i>Add On <i class="fas fa-angle-left mores"></i></a>
 
 	                                <ul id="tableelement" class="collapse ps-2">
-	                                    <li><a href="{{route('cities.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>City</a></li>
-	                                    <li><a href="{{route('countries.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Country</a></li>
-	                                    <li><a href="{{route('genders.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Gender</a></li>
-	                                    <li><a href="{{route('relatives.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Relative</a></li>
-	                                    <li><a href="{{route('roles.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Roles</a></li>
+	                                    <li><a href="{{route('cities.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> City</a></li>
+	                                    <li><a href="{{route('countries.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Country</a></li>
+	                                    <li><a href="{{route('paymentmethods.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Payment Method</a></li>
+	                                    <li><a href="{{route('relatives.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Relative</a></li>
+	                                    <li><a href="{{route('roles.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Roles</a></li>
+	                                    <li><a href="{{route('socialapplications.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Social App</a></li>
+	                                    <li><a href="{{route('warehouses.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Warehouses</a></li>
 	                                </ul>
 
 	                            </li>

@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\Log;
+use Exception;
+
 
 class EnrollsController extends Controller
 {
@@ -75,40 +78,32 @@ class EnrollsController extends Controller
     public function update(Request $request, string $id)
     {
 
-        // dd($request->all());
-        
-        $this->validate($request,[
-            'stage_id' => ['required','in:1,2,3'],
-            'remark' => ['max:4000']
-        ]);
-
-        $enroll = Enroll::findOrFail($id);
-        $enroll->stage_id = $request['stage_id'];
-        $enroll->remark = $request['remark'];
-
-        // // Remove Old Image
-        // if($request->hasFile('image')){
-        //     $path = $enroll->image;
-
-        //     if(File::exists($path)){
-        //         File::delete($path);
-        //     }
-        // }
 
 
-        // //Single Image Update
-        // if($request->hasFile('image')){
-        //     $file = $request->file('image');
-        //     $fname = $file->getClientOriginalName();
-        //     $imagenewname = uniqid($user_id).$enroll['id'].$fname;
-        //     $file->move(public_path('assets/img/enrolls/'),$imagenewname);
+        $user = Auth::user();
+        $user_id = $user->id;
 
-        //     $filepath = 'assets/img/enrolls/'. $imagenewname;
-        //     $enroll->image = $filepath;
-        // }
-        
-        $enroll->save();
-        return redirect(route('enrolls.index'));
+
+        try{
+
+            $enroll = Enroll::findOrFail($id);
+            $enroll->stage_id = $request['editstage_id'];
+            $enroll->remark = $request['editremark'];
+            $enroll->user_id = $user_id;
+    
+            $enroll->save();
+
+            if($enroll){
+                return response()->json(['status'=>'success','message'=>$enroll]);
+            }
+
+            return response()->json(['status'=>'failed','message'=>'Failed to update']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
+
     }
 
     public function destroy(string $id)
@@ -123,5 +118,20 @@ class EnrollsController extends Controller
 
         $enroll->delete();
         return redirect()->back();
+    }
+
+
+    public function bulkdeletes(Request $request)
+    {
+
+        try{
+            $getselectedids = $request->selectedids;
+            Enroll::whereIn('id',$getselectedids)->delete();
+            return response()->json(['status'=>'Selected data have been deleted successfully']);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
+        }
+
     }
 }

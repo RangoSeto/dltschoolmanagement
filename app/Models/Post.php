@@ -73,4 +73,8 @@ class Post extends Model
         return DB::table('enrolls')->where('post_id',$this->id)->where('user_id',$userid)->exists(); // exists ကရှိလားမရှိလားစစ်ပေးတာ true,false
     }
 
+    public function likes(){
+        return $this->belongsToMany(User::class,'post_like');
+    }
+
 }
