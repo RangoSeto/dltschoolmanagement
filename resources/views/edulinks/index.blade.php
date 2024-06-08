@@ -104,6 +104,7 @@
                         <th>No</th>
                         <th>Class</th>
                         <th>URl</th>
+                        <th>Counter</th>
                         <th>By</th>
                         <th>Class Date</th>
                         <th>Created At</th>
@@ -120,12 +121,15 @@
                         <td>{{$idx+ $edulinks->firstItem()}}</td>
                         <td><a href="{{route('posts.show',$edulink->post_id)}}">{{$edulink->post['title']}}</a></td>
                         <td><a href="javascript:void(0);" class="link-btns" data-url="{{$edulink->url}}" title="Copy Link">{{Str::limit($edulink->url,30)}}</a></td>
+                        <td>{{$edulink->counter}}</td>
                         <td>{{$edulink['user']['name']}}</td>
                         <td>{{date('d M Y',strtotime($edulink->classdate))}}</td>
                         <td>{{$edulink->created_at->format('d M Y h:i A')}}</td>
                         <td>{{$edulink->updated_at->format('d M Y')}}</td>
                         <td>
-                            <a href="{{$edulink->url}}" class="text-primary" target="_blank" download><i class="fas fa-download"></i></a>
+                            <a href="{{route('edulinks.download',$edulink->id)}}" class="text-primary me-2" target="_blank">Download <i class="fas fa-download"></i></a>
+
+                            {{-- <a href="{{$edulink->url}}" class="text-primary" target="_blank" download><i class="fas fa-download"></i></a> --}}
                             <a href="javascript:void(0);" class="text-info ms-2 editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$edulink->id}}" data-classdate="{{$edulink->classdate}}" data-post_id="{{$edulink->post_id}}"  data-url="{{$edulink->url}}"><i class="fas fa-pen"></i></a>
                             <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx+ $edulinks->firstItem()}}"><i class="fas fa-trash-alt"></i></a>
                         </td>

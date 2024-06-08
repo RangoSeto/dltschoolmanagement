@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Models\Attcodegenerators;
 use Illuminate\Support\Facades\Route;
 
@@ -18,10 +19,12 @@ use App\Http\Controllers\EdulinksController;
 use App\Http\Controllers\EnrollsController;
 use App\Http\Controllers\GendersController;
 use App\Http\Controllers\LeavesController;
+use App\Http\Controllers\OtpsController;
 use App\Http\Controllers\PaymentmethodsController;
 use App\Http\Controllers\PaymenttypesController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostsLikeController;
+use App\Http\Controllers\PostLiveViewersController;
 use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SocialapplicationsController;
@@ -33,6 +36,9 @@ use App\Http\Controllers\TypesController;
 use App\Http\Controllers\UsersFollowerController;
 use App\Http\Controllers\WarehousesController;
 
+
+
+use App\Http\Controllers\ChatsController;
 
 
 /*
@@ -96,6 +102,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('edulinks',EdulinksController::class);
     Route::delete('/edulinksbulkdeletes',[EdulinksController::class,'bulkdeletes'])->name('edulinks.bulkdeletes');
+    Route::get('/edulinks/download/{id}',[EdulinksController::class,'download'])->name('edulinks.download');
 
     Route::resource('enrolls',EnrollsController::class);
     Route::delete('/enrollsbulkdeletes',[EnrollsController::class,'bulkdeletes'])->name('enrolls.bulkdeletes');
@@ -108,6 +115,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('leaves',LeavesController::class);
     Route::get('notify/markasread',[LeavesController::class,'markasread'])->name('leaves.marksasread');
     Route::delete('/leavesbulkdeletes',[LeavesController::class,'bulkdeletes'])->name('leaves.bulkdeletes');
+
+    Route::post('/generateotps',[OtpsController::class,'generate']);
+    Route::post('/verifyopts',[OtpsController::class,'verify']);
 
 
     Route::resource('paymentmethods',PaymentmethodsController::class);
@@ -124,6 +134,8 @@ Route::middleware('auth')->group(function () {
     Route::post('posts/{post}/unlike',[PostsLikeController::class,'unlike'])->name('posts.unlike');
     Route::delete('/postsbulkdeletes',[PostsController::class,'bulkdeletes'])->name('posts.bulkdeletes');
 
+    Route::post('/postliveviewersinc/{post}',[PostLiveViewersController::class,'incrementviewer']); // here must be {post}, don't use {id} cuz it request Post model
+    Route::post('/postliveviewersdec/{post}',[PostLiveViewersController::class,'decrementviewer']);
 
     Route::resource('relatives',RelativesController::class);
     Route::get('relativesstatus',[RelativesController::class,'relativestatus']);
@@ -140,8 +152,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('students',StudentsController::class);
     Route::delete('/studentsbulkdeletes',[StudentsController::class,'bulkdeletes'])->name('students.bulkdeletes');
-
     Route::post('compose/mailbox',[StudentsController::class,'mailbox'])->name('students.mailbox');
+    Route::post('/students/quicksearch',[StudentsController::class,'quicksearch'])->name('students.quicksearch');
+
 
     Route::resource('stages',StagesController::class);
     Route::get('stagesstatus',[StagesController::class,'typestatus']);
@@ -168,7 +181,26 @@ Route::middleware('auth')->group(function () {
 
     
 
+
+
+    // pusher test
+    Route::get('/pushers',function(){
+        return view('pusher');
+
+    });
+
+    // pusher test by chat box
+    Route::get('/chatboxs',function(){
+        return view('chatbox');
+    });
+
+    Route::post('/chatmessages',[ChatsController::class,'sendmessage']);
+
+
 });
+
+
+
 
 require __DIR__.'/auth.php';
 

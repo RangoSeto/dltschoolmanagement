@@ -61,6 +61,7 @@
 
             <div>
                 <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+                <a href="javascript:void(0);" id="generateotp-btn" class="btn btn-success btn-sm rounded-0 ms-5">Generate OTP</a>
             </div>
 
             <div>
@@ -75,7 +76,7 @@
                     </div>
                 </form>
             </div>
-            
+
         </div>
 
         <div class="col-md-12 loader-container myscroll">
@@ -97,7 +98,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
             </table>
 
@@ -243,7 +244,7 @@
             // Start fetch All Datas By Paginate
             async function fetchalldatasbypaginate(){
 
-                const url = `api/cities?page=${page}`;
+                const url = `api/citiessearch?page=${page}`;
 
                 let results;
 
@@ -302,6 +303,8 @@
 
             alldatastodom();
 
+
+
             document.addEventListener('scroll',()=>{
                 // console.log(document.documentElement.scrollTop);
                 // console.log(document.documentElement.scrollHeight);
@@ -315,7 +318,7 @@
                 }
             });
 
-            // Show loader & fetch more datas 
+            // Show loader & fetch more datas
             function showloader(){
                 getloader.classList.add('show');
 
@@ -441,7 +444,7 @@
 
             });
 
-            // Start Edit Modal 
+            // Start Edit Modal
 
             $('#editform').validate({
 
@@ -518,7 +521,7 @@
 
                 });
 
-            // End Edit Modal 
+            // End Edit Modal
 
 
             // End Edit Form
@@ -616,7 +619,7 @@
             // End Change btn
 
 
-            // Start Bulk Delete 
+            // Start Bulk Delete
 
             $("#selectalls").click(function(){
                 $(".singlechecks").prop('checked',$(this).prop('checked'));
@@ -702,11 +705,29 @@
                     }
                 });
 
-                
+
 
             });
 
-            // End Bulk Delete 
+            // End Bulk Delete
+
+
+            // Start OTP 
+            $("#generateotp-btn").on('click',function(){
+                
+                $.ajax({
+                    url:'/generateotps',
+                    type:"POST",
+                    success:function(response){
+                        console.log(response);
+                    },
+                    error:function(response){
+                        console.error("Error : ",response);
+                    }
+                });
+
+            });
+            // End OTP
 
 
 

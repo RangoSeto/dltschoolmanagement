@@ -11,7 +11,27 @@
 
         <hr/>
 
-        <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0 mb-3">Bulk Delete</a>
+
+        <div class="col-md-12 ">
+
+            <div>
+                <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+            </div>
+
+            <div>
+                <form action="" method="">
+                    <div class="row justify-content-end">
+                        <div class="col-md-2 col-sm-6 mb-2">
+                            <div class="input-group">
+                                <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0" placeholder="Search..." value="{{request('filtername')}}" />
+                                <button type="button" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
 
         <div class="col-md-12">
 
@@ -35,7 +55,7 @@
                 </tbody>
             </table>
 
-            {{ $warehouses->links() }}
+            {{-- {{ $warehouses->links() }} --}}
 
         </div>
 
@@ -179,15 +199,18 @@
 
 
             // Start fetch All Datas
-            function fetchalldatas(){
+            function fetchalldatas(query=""){
                 $.ajax({
-                    // url:"{{url('api/warehouses')}}",
-                    // url:"{{'api/warehouses'}}",
-                    url:"{{route('api.warehouses.index')}}",
+                    url:"{{url('api/warehousessearch')}}",
+{{--                    // url:"{{'api/warehouses'}}",--}}
+                    {{--url:"{{route('api.warehouses.index')}}",--}}
                     method:"GET",
                     type:"json",
+                    data:{"query":query},
                     success:function(response){
                         // console.log(response);
+
+                        $("#mytable tbody").empty();
 
                         let datas = response.data;
                         // console.log(datas);
@@ -229,6 +252,23 @@
 
             fetchalldatas();
             // End fetch All Datas
+
+
+            // Start Filter by search Query
+            $("#btn-search").on('click',function(e){
+                e.preventDefault();
+
+                const query = $("#filtername").val();
+                // console.log(query);
+
+                if(query.length > 1){
+                    $('.loading').show();
+                }
+
+                fetchalldatas(query);
+
+            });
+            // End Filter by search Query
 
 
 
@@ -507,7 +547,7 @@
 
 
 
-            // Start Bulk Delete 
+            // Start Bulk Delete
 
             $("#selectalls").click(function(){
                 $(".singlechecks").prop('checked',$(this).prop('checked'));
@@ -571,11 +611,11 @@
                     }
                 });
 
-                
+
 
             });
 
-            // End Bulk Delete 
+            // End Bulk Delete
 
 
         });

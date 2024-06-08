@@ -50,6 +50,32 @@
     </div>
     <!--End Right Navbar-->
 
+
+	{{-- START MODAL AREA  --}}
+		{{-- Start Quicksearch Modal  --}}
+			<div id="quicksearchmodal" class="modal fade">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content rounded-0">
+						<div class="modal-header">
+							<h6 class="modal-title">Result</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+
+						<div class="modal-body">
+							<ul class="list-group">
+
+							</ul>
+						</div>
+
+						<div class="modal-footer">
+
+						</div>
+					</div>
+				</div>
+			</div>
+		{{-- End Quicksearch Modal  --}}
+	{{-- END MODAL AREA  --}}
+
         <!--bootstrap css1 js1-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
@@ -102,5 +128,55 @@
 
 		{{-- extra js --}}
 		@yield('scripts')
+
+		<script>
+
+			// Start Quick Search
+			$('#quicksearch-btn').on('click',function(e){
+				e.preventDefault();
+
+				quicksearch();
+			});
+
+			async function quicksearch(){
+				const getsearch = $('#quicksearch').val();
+				
+				await $.post('{{route("students.quicksearch")}}',
+					{
+						_token : $('meta[name="csrf-token"]').attr('content'),
+						keyword:getsearch
+					}
+				,function(response){
+					// console.log(response);
+					showresulttodom(response);
+				});
+
+			}
+
+			function showresulttodom(response){
+				console.log(response);
+
+				let newlis = "";
+
+				$("#quicksearchmodal").modal("show"); // toggle
+
+				if(response.datas.length <= 0){
+					newlis += `<li class="list-group-item">No Data</li>`;
+				}else{
+					for(let x=0; x < response.datas.length; x++){
+						newlis += `<li class="list-group-item"><a href="{{URL::to('students/${response.datas[x].id}')}}">${response.datas[x].regnumber} / ${response.datas[x].firstname} ${response.datas[x].lastname}</a></li>`;
+					}
+				}
+
+				$("#quicksearchmodal .modal-body ul.list-group").html(newlis);
+				// clear form 
+				// $("#quicksearchform")[0].reset();
+				$("#quicksearchform").trigger("reset");
+
+			}
+			// End Quick Search
+
+
+		</script>
     </body>
 </html>

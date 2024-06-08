@@ -52,7 +52,6 @@
 	                                <ul id="advanceui" class="collapse ps-2">
 	                                    <li><a href="{{route('attcodegenerators.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>All Generators</a></li>
 	                                    <li><a href="{{route('students.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>All Students</a></li>
-
 	                                </ul>
 
 	                            </li>

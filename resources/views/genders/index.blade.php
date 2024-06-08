@@ -38,11 +38,30 @@
 
         <hr/>
 
-        <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0 mb-3">Bulk Delete</a>
+        <div class="col-md-12 ">
+
+            <div>
+                <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+            </div>
+
+            <div>
+                <form action="" method="">
+                    <div class="row justify-content-end">
+                        <div class="col-md-2 col-sm-6 mb-2">
+                            <div class="input-group">
+                                <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0" placeholder="Search..." value="{{request('filtername')}}" />
+                                <button type="button" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
 
         <div class="col-md-12">
 
-            <table id="mydata" class="table table-sm table-hover border">
+            <table id="mytable" class="table table-sm table-hover border">
                 <thead>
                     <tr>
                         <th>
@@ -57,7 +76,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($genders as $idx=>$gender)
+                    {{-- @foreach($genders as $idx=>$gender)
                     <tr id="delete_{{$gender->id}}">
                         <td>
                             <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$gender->id}}" />
@@ -76,9 +95,12 @@
                             @method("DELETE")
                         </form>
                     </tr>
-                    @endforeach
+                    @endforeach --}}
                 </tbody>
             </table>
+
+            <div class="loading">Loading...</div>
+
         </div>
 
     </div>
@@ -136,6 +158,19 @@
 @section('css')
     {{-- datatable css1 js1  --}}
     <link  href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+    <style type="text/css">
+        .loading{
+            font-weight: bold;
+
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+
+            display: none;
+        }
+    </style>
 @endsection
 
 
@@ -149,6 +184,87 @@
     <script type="text/javascript">
 
         $(document).ready(function(){
+
+            
+            // Start Passing Header Token 
+            $.ajaxSetup({
+                headers:{
+                    'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            // End Passing Header Token 
+
+
+            // Start fetch All Datas
+            async function fetchalldatas(query=""){
+                
+                await $.ajax({
+                    url:"{{url('api/genderssearch')}}",
+                    method:"GET",
+                    type:"json",
+                    data:{"query":query},
+                    success:function(response){
+                        // console.log(response);
+
+                        $('.loading').hide();
+
+                        $("#mytable tbody").empty();
+
+                        let datas = response.data;
+                        // console.log(datas);
+
+                        let html;
+
+                        datas.forEach(function(data,idx){
+                            // console.log(data);
+
+                            html += `<tr id="delete_${data.id}">
+                                        <td>
+                                            <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="${data.id}" />
+                                        </td>
+                                        <td>${++idx}</td>
+                                        <td>${data.name}</td>
+                                        <!-- <td>${data.user['name']}</td> -->
+                                        <td>${data.user.name}</td>
+                                        <td>${data.created_at}</td>
+                                        <td>${data.updated_at}</td>
+                                        <td>
+                                            <a href="javascript:void(0);" class="text-info editform edit-btns" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="${data.id}" data-name="${data.name}" data-status="${data.status_id}"><i class="fas fa-pen"></i></a>
+                                            <a href="javascript:void(0);" class="text-danger ms-2 delete-btns" data-idx="${idx}" data-id="${data.id}"><i class="fas fa-trash-alt"></i></a>
+                                        </td>
+
+                                    </tr>`;
+                        });
+
+
+                        $("#mytable tbody").prepend(html);
+
+                    }
+                });
+            }
+
+            fetchalldatas();
+            // End fetch All Datas
+
+
+            // Start Filter by search Query
+            $("#btn-search").on('click',function(e){
+                e.preventDefault();
+
+                const query = $("#filtername").val();
+                // console.log(query);
+
+                if(query.length > 1){
+                    $('.loading').show();
+                }
+
+                fetchalldatas(query);
+
+            });
+            // End Filter by search Query
+
+
+
 
             // Start Delete Item
             $('.delete-btns').click(function(){

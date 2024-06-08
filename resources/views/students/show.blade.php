@@ -121,9 +121,15 @@
                                 <p class="text-small text-muted text-uppercase mb-2">Personal Info</p>
                                 <div class="row g-0 mb-2">
                                     <div class="col-auto me-2">
-                                        <i class="fas fa-info"></i>
+                                        <i class="fas fa-eyes"></i>
                                     </div>
-                                    <div class="col">Sample Data</div>
+                                    <div class="col">
+                                        @php 
+                                            $getpageurl = url()->current();
+                                            $pageview = \App\Models\Pageview::where('pageurl',$getpageurl)->first()->counter;
+                                        @endphp
+                                        Viewed {{$pageview}} times
+                                    </div>
                                 </div>
 
                                 <div class="row g-0 mb-2">
@@ -509,4 +515,3 @@
 </script>
 
 @endsection
-

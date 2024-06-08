@@ -28,6 +28,9 @@
         
         {{-- extra css  --}}
         @yield('css')
+
+        {{-- pusher js1  --}}
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
         
     </head>
     <body>

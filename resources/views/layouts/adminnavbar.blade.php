@@ -2,11 +2,11 @@
     <div class="row">
         <nav class="navbar navbar-expand navbar-light bg-white shadow">
             <!-- search -->
-            <form class="me-auto" action="" method="">
+            <form id="quicksearchform" class="me-auto" action="" method="">
                 <div class="input-group">
-                    <input type="text" name="search" id="search" class="form-control border-0  shadow-none" placeholder="Search Something..." />
+                    <input type="text" name="quicksearch" id="quicksearch" class="form-control border-0  shadow-none" placeholder="Search Something..." />
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        <button type="submit" id="quicksearch-btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </form>

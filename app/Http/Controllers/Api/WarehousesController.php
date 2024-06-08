@@ -93,4 +93,16 @@ class WarehousesController extends Controller
     }
 
 
+    public function search(Request $request){
+        $query = $request->input('query');
+
+        if($query){
+            $warehouses = Warehouse::where('name',"LIKE","%{$query}%")->get();
+        }else{
+            $warehouses = Warehouse::all();
+        }
+
+        return WarehousesResource::collection($warehouses);
+    }
+
 }

@@ -14,10 +14,17 @@ use Exception;
 
 class PaymentmethodsController extends Controller
 {
-    
+
     public function index()
     {
-        $paymentmethods = Paymentmethod::all();
+//        $paymentmethods = Paymentmethod::all();
+
+        $paymentmethods = Paymentmethod::where(function($query){
+            if($getname = request('filtername')){
+                $query->where('name',"LIKE",'%'.$getname.'%');
+            }
+        })->get();
+
         $paymenttypes = Paymenttype::where('status_id',3)->get();
         $statuses = Status::whereIn('id',[3,4])->get();
         return view('paymentmethods.index',compact('paymentmethods','statuses','paymenttypes'));
@@ -54,8 +61,6 @@ class PaymentmethodsController extends Controller
             return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
         }
 
-        
-        return redirect(route('paymentmethods.index'));
     }
 
 
@@ -67,7 +72,7 @@ class PaymentmethodsController extends Controller
             'paymenttype_id' => 'required',
             'status_id' => ['required','in:3,4']
         ]);
-        
+
         $user = Auth::user();
         $user_id = $user['id'];
 
@@ -92,9 +97,9 @@ class PaymentmethodsController extends Controller
             return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
         }
 
-        
+
     }
-    
+
     public function destroy(Paymentmethod $paymentmethod)
     {
 

@@ -155,16 +155,24 @@
 
                                     <div class="row g-0 mb-2">
                                         <div class="col-auto me-2">
-                                            <i class="fas fa-info"></i>
+                                            <i class="fas fa-hand-pointer"></i>
                                         </div>
-                                        <div class="col">Sample Data</div>
+                                        <div class="col">
+                                            @php 
+                                                $getpageurl = url()->current();
+                                                $pageview = \App\Models\Pageview::where('pageurl',$getpageurl)->first()->counter;
+                                            @endphp
+                                            Clicked {{$pageview}} times
+                                        </div>
                                     </div>
 
                                     <div class="row g-0 mb-2">
                                         <div class="col-auto me-2">
-                                            <i class="fas fa-info"></i>
+                                            <i class="fas fa-eye"></i>
                                         </div>
-                                        <div class="col">Sample Data</div>
+                                        <div class="col">
+                                            <span id="liveviewer">0 </span>User Watching
+                                        </div>
                                     </div>
 
                                     <div class="row g-0 mb-2">
@@ -286,6 +294,11 @@
     </div>
 
     <!--End Page Content Area-->
+
+
+    {{-- Start Hidden Area  --}}
+    <input type="hidden" id="setpostid" data-id="{{$post->id}}" />
+    {{-- End hidden Area  --}}
 
 
 
@@ -522,7 +535,79 @@
         });
 
 
+
+
+
     });
+
+
+
+
+    // Start Post Live Viewer Pusher
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('a24ca07f1075421c571e', {
+      cluster: 'ap1'
+    });
+
+    function mainchannel(postid){
+        var channel = pusher.subscribe('postliveviewer-channel_'+postid);
+        channel.bind('postliveviewer-event', function(data) {
+            // alert(JSON.stringify(data));
+            console.log(data);
+            document.getElementById('liveviewer').textContent = data.count;
+        });
+
+    }
+
+    function incrementviewer(postid){
+        $.ajax({
+            url:`/postliveviewersinc/${postid}`,
+            type:'POST',
+            data:{
+                _token:$('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(response){
+                console.log('Increment Status = ',response.success);
+            }
+        });
+    }
+
+    function decrementviewer(postid){
+        $.ajax({
+            url:`/postliveviewersdec/${postid}`,
+            type:'POST',
+            data:{
+                _token:$('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(response){
+                console.log('Decrement Status = ',response.success);
+            }
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded',function(){
+        // console.log('i am loaded');
+
+        const getpostid = document.getElementById("setpostid").getAttribute('data-id');
+
+        incrementviewer(getpostid);
+        mainchannel(getpostid);
+    });
+
+    window.addEventListener('beforeunload',function(){
+        // console.log('i am unloaded');
+
+        const getpostid = document.getElementById("setpostid").getAttribute('data-id');
+
+        decrementviewer(getpostid);
+    });
+
+    
+    // End Post Live Viewer Pusher
+
 
 </script>
 @endsection
