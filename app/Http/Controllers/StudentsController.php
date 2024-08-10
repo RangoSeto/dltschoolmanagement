@@ -38,7 +38,7 @@ class StudentsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'regnumber' => 'required|unique:students,regnumber',
+            // 'regnumber' => 'required|unique:students,regnumber',
             'firstname' => 'required',
             'lastname' => 'required',
             'remark' => 'max:1000'
@@ -49,7 +49,7 @@ class StudentsController extends Controller
         $user = Auth::user();
         $user_id = $user->id;
         $student = new Student();
-        $student->regnumber = $request['regnumber'];
+        // $student->regnumber = $request['regnumber'];
         $student->firstname = $request['firstname'];
         $student->lastname = $request['lastname'];
         $student->slug = Str::slug($request['firstname']);
@@ -152,5 +152,21 @@ class StudentsController extends Controller
             return response()->json(['status'=>'failed','message'=>$e->getMessage()]);
         }
     }
+
+
+
+    public function quicksearch(Request $request){
+
+        $students = "";
+
+        if($request->keyword != ""){
+            // $students = Student::all();
+            $students = Student::where("regnumber","LIKE",'%'.$request->keyword.'%')->get();
+        }
+
+        return response()->json(['datas'=>$students]);
+
+    }
+
 
 }

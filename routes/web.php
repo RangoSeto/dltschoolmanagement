@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Models\Attcodegenerators;
 use Illuminate\Support\Facades\Route;
 
@@ -8,6 +9,7 @@ use App\Http\Controllers\AttcodegeneratorsController;
 use App\Http\Controllers\AttendancesController;
 use App\Http\Controllers\DashboardsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CartsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CitiesController;
 use App\Http\Controllers\CommentsController;
@@ -18,21 +20,35 @@ use App\Http\Controllers\EdulinksController;
 use App\Http\Controllers\EnrollsController;
 use App\Http\Controllers\GendersController;
 use App\Http\Controllers\LeavesController;
+use App\Http\Controllers\OtpsController;
+use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\PaymentmethodsController;
 use App\Http\Controllers\PaymenttypesController;
+use App\Http\Controllers\PlansController;
+use App\Http\Controllers\PointTransfersController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostsLikeController;
+use App\Http\Controllers\PostLiveViewersController;
+use App\Http\Controllers\PostViewDurationsController;
+use App\Http\Controllers\RegionsController;
+use App\Http\Controllers\ReligionsController;
 use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SocialapplicationsController;
 use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\StagesController;
 use App\Http\Controllers\StatusesController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\TownshipsController;
 use App\Http\Controllers\TypesController;
 use App\Http\Controllers\UsersFollowerController;
+use App\Http\Controllers\UserPointsController;
 use App\Http\Controllers\WarehousesController;
 
+
+
+use App\Http\Controllers\ChatsController;
 
 
 /*
@@ -70,8 +86,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/attcodegeneratorsbulkdeletes',[AttcodegeneratorsController::class,'bulkdeletes'])->name('attcodegenerators.bulkdeletes');
 
 
-    Route::resource('attendances',AttendancesController::class);
-    Route::delete('/attendancesbulkdeletes',[AttendancesController::class,'bulkdeletes'])->name('attendances.bulkdeletes');
+    Route::get('/carts',[CartsController::class,'index'])->name('carts.index');
+    Route::post('/carts/add',[CartsController::class,'add'])->name('carts.add');
+    Route::post('/carts/remove',[CartsController::class,'remove'])->name('carts.remove');
+    Route::post('/carts/paybypoints',[CartsController::class,'paybypoints'])->name('carts.paybypoints');
 
 
     Route::resource('categories',CategoriesController::class);
@@ -96,6 +114,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('edulinks',EdulinksController::class);
     Route::delete('/edulinksbulkdeletes',[EdulinksController::class,'bulkdeletes'])->name('edulinks.bulkdeletes');
+    Route::get('/edulinks/download/{id}',[EdulinksController::class,'download'])->name('edulinks.download');
 
     Route::resource('enrolls',EnrollsController::class);
     Route::delete('/enrollsbulkdeletes',[EnrollsController::class,'bulkdeletes'])->name('enrolls.bulkdeletes');
@@ -109,6 +128,14 @@ Route::middleware('auth')->group(function () {
     Route::get('notify/markasread',[LeavesController::class,'markasread'])->name('leaves.marksasread');
     Route::delete('/leavesbulkdeletes',[LeavesController::class,'bulkdeletes'])->name('leaves.bulkdeletes');
 
+    Route::post('/generateotps',[OtpsController::class,'generate']);
+    Route::post('/verifyopts',[OtpsController::class,'verify']);
+
+
+    Route::resource('packages',PackagesController::class);
+    Route::post('/packages/setpackage',[PackagesController::class,'setpackage'])->name('packages.setpackage');
+    Route::delete('/packagesbulkdeletes',[PackagesController::class,'bulkdeletes'])->name('packages.bulkdeletes');
+
 
     Route::resource('paymentmethods',PaymentmethodsController::class);
     Route::get('paymentmethodsstatus',[PaymentmethodsController::class,'typestatus']);
@@ -118,16 +145,37 @@ Route::middleware('auth')->group(function () {
     Route::get('paymenttypesstatus',[PaymenttypesController::class,'typestatus']);
     Route::delete('/paymenttypesbulkdeletes',[PaymenttypesController::class,'bulkdeletes'])->name('paymenttypes.bulkdeletes');
 
+    Route::resource('plans',PlansController::class);
+
+    Route::resource('pointtransfers',PointTransfersController::class);
+    Route::post('/pointtransfers/transfer',[PointTransfersController::class,'transfers'])->name('pointtransfers.transfers');
+
+
 
     Route::resource('posts',PostsController::class);
-    Route::post('posts/{post}/like',[PostsLikeController::class,'like'])->name('posts.like');
-    Route::post('posts/{post}/unlike',[PostsLikeController::class,'unlike'])->name('posts.unlike');
+    Route::post('/posts/{post}/like',[PostsLikeController::class,'like'])->name('posts.like');
+    Route::post('/posts/{post}/unlike',[PostsLikeController::class,'unlike'])->name('posts.unlike');
     Route::delete('/postsbulkdeletes',[PostsController::class,'bulkdeletes'])->name('posts.bulkdeletes');
+
+    Route::post('/postliveviewersinc/{post}',[PostLiveViewersController::class,'incrementviewer']); // here must be {post}, don't use {id} cuz it request Post model
+    Route::post('/postliveviewersdec/{post}',[PostLiveViewersController::class,'decrementviewer']);
+
+
+    Route::post('/trackdurations',[PostViewDurationsController::class,'trackduration']);
 
 
     Route::resource('relatives',RelativesController::class);
     Route::get('relativesstatus',[RelativesController::class,'relativestatus']);
     Route::delete('/relativesbulkdeletes',[RelativesController::class,'bulkdeletes'])->name('relatives.bulkdeletes');
+
+    Route::resource('regions',RegionsController::class);
+    Route::get('/regionsstatus',[RegionsController::class,'typestatus']);
+    Route::delete('/regionsbulkdeletes',[RegionsController::class,'bulkdeletes'])->name('regions.bulkdeletes');
+
+    Route::resource('religions',ReligionsController::class);
+    Route::get('/religionsstatus',[ReligionsController::class,'typestatus']);
+    Route::delete('/religionsbulkdeletes',[ReligionsController::class,'bulkdeletes'])->name('religions.bulkdeletes');
+
 
     Route::resource('roles',RolesController::class);
     Route::get('rolesstatus',[RolesController::class,'rolestatus']);
@@ -140,8 +188,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('students',StudentsController::class);
     Route::delete('/studentsbulkdeletes',[StudentsController::class,'bulkdeletes'])->name('students.bulkdeletes');
-
     Route::post('compose/mailbox',[StudentsController::class,'mailbox'])->name('students.mailbox');
+    Route::post('/students/quicksearch',[StudentsController::class,'quicksearch'])->name('students.quicksearch');
+
+    Route::get('/subscribesexpired',[SubscriptionsController::class,'expired'])->name('subscriptions.expired');
+
 
     Route::resource('stages',StagesController::class);
     Route::get('stagesstatus',[StagesController::class,'typestatus']);
@@ -154,21 +205,53 @@ Route::middleware('auth')->group(function () {
     Route::get('tagsstatus',[TagsController::class,'tagstatus']);
     Route::delete('/tagsbulkdeletes',[TagsController::class,'bulkdeletes'])->name('tags.bulkdeletes');
 
+    Route::resource('townships',TownshipsController::class);
+    Route::get('/townshipsstatus',[TownshipsController::class,'typestatus']);
+    Route::delete('/townshipsbulkdeletes',[TownshipsController::class,'bulkdeletes'])->name('townships.bulkdeletes');
+
+
     Route::resource('types',TypesController::class)->except('destroy');
     Route::get('/typesstatus',[TypesController::class,'typestatus']);
     Route::get('/typesdelete',[TypesController::class,'destroy'])->name('types.delete');
     Route::delete('/typesbulkdeletes',[TypesController::class,'bulkdeletes'])->name('types.bulkdeletes');
 
 
-    Route::post('users/{user}/follow',[UsersFollowerController::class,'like'])->name('users.follow');
-    Route::post('users/{user}/unfollow',[UsersFollowerController::class,'unlike'])->name('users.unfollow');
+    Route::post('/users/{user}/follow',[UsersFollowerController::class,'like'])->name('users.follow');
+    Route::post('/users/{user}/unfollow',[UsersFollowerController::class,'unlike'])->name('users.unfollow');
+
+    Route::resource('userpoints',UserPointsController::class);
+    Route::post('/userpoints/verifystudent',[UserPointsController::class,'verifystudent'])->name('userpoints.verifystudent');
+    Route::delete('/userpointsbulkdeletes',[UserPointsController::class,'bulkdeletes'])->name('userpoints.bulkdeletes');
+
 
     Route::resource('warehouses',WarehousesController::class);
     Route::delete('/warehousesbulkdeletes',[WarehousesController::class,'bulkdeletes'])->name('warehouses.bulkdeletes');
 
     
 
+
+
+    // pusher test
+    Route::get('/pushers',function(){
+        return view('pusher');
+
+    });
+
+    // pusher test by chat box
+    Route::get('/chatboxs',function(){
+        return view('chatbox');
+    });
+
+    Route::post('/chatmessages',[ChatsController::class,'sendmessage']);
+
+
 });
+
+Route::middleware(['auth','validate.subscriptions'])->group(function(){
+    Route::resource('attendances',AttendancesController::class);
+    Route::delete('/attendancesbulkdeletes',[AttendancesController::class,'bulkdeletes'])->name('attendances.bulkdeletes');
+});
+
 
 require __DIR__.'/auth.php';
 

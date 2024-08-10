@@ -52,18 +52,29 @@
 	                                <ul id="advanceui" class="collapse ps-2">
 	                                    <li><a href="{{route('attcodegenerators.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>All Generators</a></li>
 	                                    <li><a href="{{route('students.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>All Students</a></li>
-
 	                                </ul>
 
 	                            </li>
 
-	                            <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-file-alt fa-md me-3"></i>Popus</a></li>
 
 	                            <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#iconelement"><i class="fas fa-share-alt-square fa-md me-3"></i>Apps <i class="fas fa-angle-left mores"></i></a>
 
 	                                <ul id="iconelement" class="collapse ps-2">
 	                                    <li><a href="{{route('contacts.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Contacts</a></li>
 	                                    <li><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Todo</a></li>
+	                                </ul>
+
+	                            </li>
+
+	                            <li class="nav-item"><a href="{{route('pointtransfers.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-exchange-alt fa-md me-3"></i>Transfer</a></li>
+
+
+								<li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#shopdd"><i class="fas fa-shopping-cart fa-md me-3"></i>Shopping <i class="fas fa-angle-left mores"></i></a>
+
+	                                <ul id="shopdd" class="collapse ps-2">
+	                                    <li><a href="{{route('plans.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Plans</a></li>
+	                                    <li><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Billings</a></li>
+	                                    <li><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Payment</a></li>
 	                                </ul>
 
 	                            </li>
@@ -76,6 +87,7 @@
 	                                    <li><a href="{{route('days.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Day</a></li>
 	                                    <li><a href="{{route('categories.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Categories</a></li>
 	                                    <li><a href="{{route('genders.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Gender</a></li>
+	                                    <li><a href="{{route('packages.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Package</a></li>
 	                                    <li><a href="{{route('paymenttypes.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Payment Types</a></li>
 	                                    <li><a href="{{route('stages.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Stage</a></li>
 	                                    <li><a href="{{route('statuses.index')}}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i>Status</a></li>

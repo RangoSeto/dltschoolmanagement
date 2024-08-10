@@ -92,4 +92,21 @@ class CitiesController extends Controller
 
         return new CitiesResource($city);
     }
+
+    public function search(Request $request){
+
+        $query = $request->input('query');
+
+        if($query){
+            $city = City::where('name',"LIKE","%{$query}%")->paginate(10);
+        }else{
+            $city = City::paginate(10);
+        }
+
+        return CitiesResource::collection($city);
+    }
+
+    public function filterbycountryid($filter){
+        return CitiesResource::collection(City::where('country_id',$filter)->where('status_id',3)->get());
+    }
 }

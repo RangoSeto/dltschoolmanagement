@@ -78,8 +78,6 @@ class EnrollsController extends Controller
     public function update(Request $request, string $id)
     {
 
-
-
         $user = Auth::user();
         $user_id = $user->id;
 

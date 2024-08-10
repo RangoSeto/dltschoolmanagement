@@ -155,4 +155,11 @@ class EdulinksController extends Controller
 
     }
 
+    public function download($id){
+        $edulink = Edulink::findOrFail($id);
+        $edulink->increment('counter');
+        
+        return redirect($edulink->url);
+    }
+
 }

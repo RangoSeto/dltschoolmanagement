@@ -30,11 +30,30 @@ body{
 	z-index: 200;
 
 	display: none;
+
+	overflow-y: scroll;
+}
+
+.right-panels::-webkit-scrollbar{
+	width: 1px;
+}
+
+.right-panels::-webkit-scrollbar-track{
+	background-color: #f4f4f4;
+}
+
+.right-panels::-webkit-scrollbar-thumb{
+	background-color: #888;
+}
+
+.right-panels::-webkit-scrollbar-thumb:hover{
+	background-color: #555;
 }
 
 body.show-nav > .right-panels{
 	display: block;
 }
+
 
 .right-panels h6{
 	background-color: steelblue;
@@ -91,6 +110,10 @@ a{
 .sidebars{
 	min-height: 100vh;
 	background-color: #000;
+}
+
+.sidebars::-webkit-scrollbar{
+	width: 0;
 }
 
 .nav-item.nav-categories{
@@ -234,3 +257,24 @@ a{
 /* show  */
 /* End Enroll */
 
+
+/* Custom table style  */
+table#mytable{
+	background-color: transparent;
+}
+
+table#mytable th,table#mytable td{
+	background-color: transparent;
+}
+
+
+
+/* Plans Cart Box  */
+
+.plans{
+	transition: border-radius .2s;
+}
+.plans:hover{
+	border-radius: 0 80px 0 0 !important;
+	transform: translateY(-2px);
+}

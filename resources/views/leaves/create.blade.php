@@ -19,10 +19,10 @@
                         <div class="row">
 
                             <div class="col-md-12 form-group mb-3">
-                                <label for="image" class="gallery">
+                                <label for="images" class="gallery">
                                     <span>Choose Images</span>
                                 </label>
-                                <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" value="{{old('image')}}" hidden>
+                                <input type="file" name="images[]" id="images" class="form-control form-control-sm rounded-0" value="{{old('image')}}" multiple hidden>
                             </div>
 
                             <div class="col-md-6 form-group mb-3">
@@ -164,7 +164,7 @@
                     filereader.readAsDataURL(input.files[i]);
 
                     filereader.onload = function(e){
-                        $(output).html('');
+                        
                         $($.parseHTML("<img>")).attr("src",e.target.result).appendTo(output);
                     }
 
@@ -174,7 +174,7 @@
         };
 
         
-        $("#image").change(function(){
+        $("#images").change(function(){
             previewimages(this,'label.gallery');
         });
 

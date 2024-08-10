@@ -1,6 +1,7 @@
 @include('layouts.adminheader')
 
-<div>
+
+<div id="app">
 
     <!--Start Site Setting-->
     <div id="sitesettings" class="sitesettings">
@@ -11,7 +12,6 @@
     {{-- Start Left Side Bar --}}
     @include('layouts.adminleftsidebar')
     {{-- End Left Side Bar --}}
-
 
 
     <!--Start Content Area-->

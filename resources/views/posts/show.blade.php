@@ -10,7 +10,7 @@
 
             <a href="javascript:void(0);" id="btn-back" class="btn btn-secondary btn-sm rounded-0"> Back</a>
             <a href="{{route('posts.index')}}" class="btn btn-secondary btn-sm rounded-0"> Close</a>
-            
+
             <hr/>
 
             <div class="row">
@@ -44,7 +44,7 @@
                                         <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0 me-2">Like</button>
                                     </form>
                                 @endif
-                                
+
                             </div>
 
                             <div class="mb-5">
@@ -145,7 +145,7 @@
 
                             <div class="mb-5">
                                 <p class="text-small text-muted text-uppercase mb-2">Other</p>
-                                
+
                                     <div class="row g-0 mb-2">
                                         <div class="col-auto me-2">
                                             <i class="fas fa-thumbs-up"></i>
@@ -155,9 +155,24 @@
 
                                     <div class="row g-0 mb-2">
                                         <div class="col-auto me-2">
-                                            <i class="fas fa-info"></i>
+                                            <i class="fas fa-hand-pointer"></i>
                                         </div>
-                                        <div class="col">Sample Data</div>
+                                        <div class="col">
+                                            @php
+                                                $getpageurl = url()->current();
+                                                $pageview = \App\Models\Pageview::where('pageurl',$getpageurl)->first()->counter;
+                                            @endphp
+                                            Clicked {{$pageview}} times
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-0 mb-2">
+                                        <div class="col-auto me-2">
+                                            <i class="fas fa-eye"></i>
+                                        </div>
+                                        <div class="col">
+                                            <span id="liveviewer">0 </span>User Watching
+                                        </div>
                                     </div>
 
                                     <div class="row g-0 mb-2">
@@ -167,18 +182,11 @@
                                         <div class="col">Sample Data</div>
                                     </div>
 
-                                    <div class="row g-0 mb-2">
-                                        <div class="col-auto me-2">
-                                            <i class="fas fa-info"></i>
-                                        </div>
-                                        <div class="col">Sample Data</div>
-                                    </div>
-                                
                             </div>
 
                         </div>
 
-                        
+
                     </div>
 
                 </div>
@@ -197,34 +205,34 @@
                                                     <div>
                                                         <p>{{$comment->description}}</p>
                                                     </div>
-        
+
                                                     <div>
                                                         <span class="small fw-bold float-end">{{$comment->user['name']}} | {{$comment->created_at->diffForHumans()}}</span>
                                                     </div>
-        
+
                                                 </li>
 
-                                                @empty 
+                                                @empty
                                                 <li class="list-group-item mt-2">No Comments Found</li>
 
                                             @endforelse
                                         </ul>
                                     </div>
-        
+
                                     <div class="card-body border-top">
                                         <form action="{{route('comments.store')}}" method="POST">
                                             @csrf
-        
+
                                             <div class="col-md-12 d-flex justify-between">
                                                 <textarea name="description" id="description" class="form-control border-0 rounded-0" rows="1" style="resize: none;" placeholder="Comment Here..." ></textarea>
                                                 <button type="submit" class="btn btn-info btn-sm text-light ms-3"><i class="fas fa-paper-plane"></i></button>
                                             </div>
-        
+
                                             {{-- Start Hidden Fields  --}}
                                             <input type="hidden" name="commentable_id" id="commentable_id" value="{{$post->id}}" />
                                             <input type="hidden" name="commentable_type" id="commentable_type" value="App\Models\Post" />
                                             {{-- End Hidden Fields  --}}
-        
+
                                         </form>
                                     </div>
                                 </div>
@@ -245,6 +253,10 @@
 
                             <li class="nav-item">
                                 <button type="button" class="tablinks" onclick="gettab(event,'liked')">Liked</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button type="button" class="tablinks" onclick="gettab(event,'duration')">Duration</button>
                             </li>
 
                             <li class="nav-item">
@@ -269,6 +281,27 @@
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
                             </div>
 
+                            <div id="duration" class="tab-panel" style="height: 250px; overflow-y: scroll;">
+                                <table class="table table-sm table-hover border">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Duration</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($postviewdurations as $postviewduration)
+                                            <tr>
+                                                <td>{{$postviewduration->user->name}}</td>
+                                                <td>{{$postviewduration->duration}}</td>
+                                                <td>{{$postviewduration->created_at->format('d M Y h:m A')}}</td>
+                                            </tr>
+                                      @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div id="remark" class="tab-panel">
                                 <h3>This is Remark Information.</h3>
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
@@ -276,7 +309,7 @@
 
                         </div>
                     </div>
-                    
+
 
                 </div>
             </div>
@@ -286,6 +319,11 @@
     </div>
 
     <!--End Page Content Area-->
+
+
+    {{-- Start Hidden Area  --}}
+    <input type="hidden" id="setpostid" data-id="{{$post->id}}" />
+    {{-- End hidden Area  --}}
 
 
 
@@ -390,7 +428,7 @@
 			margin: 0 5px;
 		}
     /* End image preview */
-    
+
 
 
 /* Start Tab Box  */
@@ -447,7 +485,7 @@
 
 
     // Start Tab Box
-    
+
     var gettablinks = document.getElementsByClassName('tablinks'); //HTML Collection
     var gettabpanes = document.getElementsByClassName('tab-panel');
 
@@ -523,6 +561,103 @@
 
 
     });
+
+
+
+    // Start Post View Duration
+    // $(document).ready(function(){
+    $(window).on('beforeunload',function(){
+
+        const exittime = new Date().toISOString();
+        // console.log(exittime); // 2024-06-08T13:09:17.505Z
+
+        $.ajax({
+            url:'/trackdurations',
+            method:'POST',
+            data:{
+                exittime:exittime,
+                _token:'{{ csrf_token() }}'
+            },
+            success:function(response){
+                console.log(response);
+            }
+        });
+
+    });
+    // End Post View Duration
+
+
+
+
+    // Start Post Live Viewer Pusher
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = false;
+
+    var pusher = new Pusher('a24ca07f1075421c571e', {
+      cluster: 'ap1'
+    });
+
+    function mainchannel(postid){
+        var channel = pusher.subscribe('postliveviewer-channel_'+postid);
+
+        // channel.bind('postliveviewer-event', function(data) { // must be broacastAs in Event
+        channel.bind('App\\Events\\PostLiveViewerEvent', function(data) { // don't need to add broascastAs in event
+            // alert(JSON.stringify(data));
+            console.log(data);
+            document.getElementById('liveviewer').textContent = data.count;
+        });
+
+    }
+
+    function incrementviewer(postid){
+        $.ajax({
+            url:`/postliveviewersinc/${postid}`,
+            type:'POST',
+            data:{
+                _token:$('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(response){
+                console.log('Increment Status = ',response.success);
+            }
+        });
+    }
+
+    function decrementviewer(postid){
+        $.ajax({
+            url:`/postliveviewersdec/${postid}`,
+            type:'POST',
+            data:{
+                _token:$('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(response){
+                console.log('Decrement Status = ',response.success);
+            }
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded',function(){
+        // console.log('i am loaded');
+
+        const getpostid = document.getElementById("setpostid").getAttribute('data-id');
+
+        incrementviewer(getpostid);
+        mainchannel(getpostid);
+    });
+
+    window.addEventListener('beforeunload',function(){
+        // console.log('i am unloaded');
+
+        const getpostid = document.getElementById("setpostid").getAttribute('data-id');
+
+        decrementviewer(getpostid);
+    });
+
+    // End Post Live Viewer Pusher
+
+
+
+
 
 </script>
 @endsection

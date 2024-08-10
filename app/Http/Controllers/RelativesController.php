@@ -12,10 +12,17 @@ use Exception;
 
 class RelativesController extends Controller
 {
-    
+
     public function index()
     {
-        $relatives = Relative::all();
+//        $relatives = Relative::all();
+
+        $relatives = Relative::where(function($query){
+            if($getname = request('filtername')){
+                $query->where('name',"LIKE",'%'.$getname.'%');
+            }
+        })->get();
+
         $statuses = Status::whereIn('id',[3,4])->get();
         return view('relatives.index',compact('relatives','statuses'));
     }

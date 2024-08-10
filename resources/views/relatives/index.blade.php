@@ -10,11 +10,31 @@
         <div class="col-md-12">
 
             <a href="#createmodal" class="btn btn-primary btn-sm rounded-0" data-bs-toggle="modal">Create</a>
-            <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0 float-end me-3">Bulk Delete</a>
 
             <hr/>
 
-            <table id="mydata" class="table table-sm table-hover border">
+            <div class="col-md-12">
+
+                <div>
+                    <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+                </div>
+
+                <div>
+                    <form action="" method="">
+                        <div class="row justify-content-end">
+                            <div class="col-md-2 col-sm-6 mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0" placeholder="Search..." />
+                                    <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <table id="mytable" class="table table-sm table-hover border">
                 <thead>
                     <tr>
                         <th>
@@ -216,7 +236,7 @@
             // End Edit Form
 
             // for mytable
-            $('#mydata').DataTable();
+            // $('#mytable').DataTable();
 
 
             // Start Change Btn
@@ -237,7 +257,7 @@
             // End Change Btn
 
 
-            // Start Bulk Delete 
+            // Start Bulk Delete
 
             $("#selectalls").click(function(){
                 $(".singlechecks").prop('checked',$(this).prop('checked'));
@@ -300,10 +320,10 @@
 
                     }
                 });
-                
+
             });
 
-            // End Bulk Delete 
+            // End Bulk Delete
 
 
         });

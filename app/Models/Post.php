@@ -77,4 +77,8 @@ class Post extends Model
         return $this->belongsToMany(User::class,'post_like');
     }
 
+    public function postviewdurations(){
+        return $this->hasMany(PostViewDuration::class);
+    }
+
 }

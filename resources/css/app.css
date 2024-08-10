@@ -1,3 +1,6 @@
-@tailwind base;
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* if you use bootstrap! tailwind must disabled  */
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */

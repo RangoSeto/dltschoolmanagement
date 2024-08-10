@@ -7,6 +7,8 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'public/assets/dist/css/style.css',     // Add your custom css file
+                'public/assets/dist/js/app.js',         // Add your custom js file
             ],
             refresh: true,
         }),

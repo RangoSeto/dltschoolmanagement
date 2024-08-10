@@ -15,13 +15,7 @@
                 {{ csrf_field() }}
 
                 <div class="row align-items-end">
-                    <div class="col-md-3 form-group mb-3">
-                        <label for="name">Name <span class="text-danger">*</span></label>
-                        {{-- @error('name')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror --}}
-                        <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter name" value="{{old('name')}}">
-                    </div>
+                    
 
                     <div class="col-md-3 form-group mb-3">
                         <label for="country_id">Country <span class="text-danger">*</span></label>
@@ -30,6 +24,14 @@
                             <option value="{{$country['id']}}">{{$country['name']}}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="col-md-3 form-group mb-3">
+                        <label for="name">Name <span class="text-danger">*</span></label>
+                        {{-- @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror --}}
+                        <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter name" value="{{old('name')}}">
                     </div>
 
                     <div class="col-md-3 form-group mb-3">
@@ -60,7 +62,8 @@
         <div class="col-md-12">
 
             <div>
-                <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+                {{-- <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a> --}}
+                <a href="javascript:void(0);" id="generateotp-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
             </div>
 
             <div>
@@ -75,7 +78,7 @@
                     </div>
                 </form>
             </div>
-            
+
         </div>
 
         <div class="col-md-12 loader-container myscroll">
@@ -87,8 +90,8 @@
                             <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
                         </th>
                         <th>ID</th>
-                        <th>Name</th>
                         <th>Country</th>
+                        <th>Name</th>
                         <th>Status</th>
                         <th>By</th>
                         <th>Created At</th>
@@ -97,7 +100,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
             </table>
 
@@ -132,10 +135,6 @@
 
 
                                 <div class="row align-items-end">
-                                    <div class="col-md-5 form-group mb-3">
-                                        <label for="editname">Name <span class="text-danger">*</span></label>
-                                        <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter name" value="{{old('name')}}">
-                                    </div>
 
 
                                     <div class="col-md-4 form-group mb-3">
@@ -146,6 +145,12 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    
+                                    <div class="col-md-5 form-group mb-3">
+                                        <label for="editname">Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter name" value="{{old('name')}}">
+                                    </div>
+
 
                                     <div class="col-md-3 form-group mb-3">
                                         <label for="editstatus_id">Status <span class="text-danger">*</span></label>
@@ -178,6 +183,40 @@
                 </div>
             </div>
         {{-- end edit modal  --}}
+
+
+        <div id="otpmodal" class="modal fade">
+            <div class="modal-dialog model-sm modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <form id="verifyform" action="" method="">
+
+                            <div class="row">
+
+                                <div class="form-group col-md-12 mb-3">
+                                    <label for="otpcode">OTP Code <span class="text-danger">*</span></label>
+                                    <input type="text" name="otpcode" id="otpcode" class="form-control form-control-sm rounded-0" placeholder="Enter Your OTP">
+                                </div>
+
+                                <input type="hidden" name="otpuser_id" id="otpuser_id" value="{{$userdata['id']}}" />
+
+                                <div class="col-md-12 text-end mb-3">
+                                    <button type="submit" class="btn btn-primary btn-sm rounded-0">Update</button>
+                                </div>
+                                
+                            </div>
+
+                            {{-- <p id="otpmessage"></p> --}}
+                            <p>Expires in : <span id="otptimer"></span> seconds</p>
+
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
     {{-- END MODAL AREA --}}
 
 
@@ -243,7 +282,7 @@
             // Start fetch All Datas By Paginate
             async function fetchalldatasbypaginate(){
 
-                const url = `api/cities?page=${page}`;
+                const url = `api/citiessearch?page=${page}`;
 
                 let results;
 
@@ -278,8 +317,8 @@
                                         <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="${data.id}" />
                                     </td>
                                     <td>${data.id}</td>
-                                    <td>${data.name}</td>
                                     <td>${data.country['name']}</td>
+                                    <td>${data.name}</td>
                                     <td>
                                         <div class="form-check form-switch">
                                             <input type="checkbox" class="form-check-input change-btn" ${data.status_id == 3 ? 'checked' : ''} data-id="${data.id}" />
@@ -302,6 +341,8 @@
 
             alldatastodom();
 
+
+
             document.addEventListener('scroll',()=>{
                 // console.log(document.documentElement.scrollTop);
                 // console.log(document.documentElement.scrollHeight);
@@ -315,7 +356,7 @@
                 }
             });
 
-            // Show loader & fetch more datas 
+            // Show loader & fetch more datas
             function showloader(){
                 getloader.classList.add('show');
 
@@ -376,8 +417,8 @@
                                             <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="${data.id}" />
                                         </td>
                                         <td>${data.id}</td>
-                                        <td>${data.name}</td>
                                         <td>${data.country['name']}</td>
+                                        <td>${data.name}</td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="form-check-input change-btn" ${data.status_id == 3 ? 'checked' : ''} data-id="${data.id}" />
@@ -441,7 +482,7 @@
 
             });
 
-            // Start Edit Modal 
+            // Start Edit Modal
 
             $('#editform').validate({
 
@@ -477,8 +518,8 @@
                                             <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="${data.id}" />
                                         </td>
                                         <td>${data.id}</td>
-                                        <td>${data.name}</td>
                                         <td>${data.country['name']}</td>
+                                        <td>${data.name}</td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="form-check-input change-btn" ${data.status_id == 3 ? 'checked' : ''} data-id="${data.id}" />
@@ -518,7 +559,7 @@
 
                 });
 
-            // End Edit Modal 
+            // End Edit Modal
 
 
             // End Edit Form
@@ -616,97 +657,249 @@
             // End Change btn
 
 
-            // Start Bulk Delete 
+            // Start Bulk Delete
 
             $("#selectalls").click(function(){
                 $(".singlechecks").prop('checked',$(this).prop('checked'));
             });
 
-            $("#bulkdelete-btn").click(function(){
-                let getselectedids = [];
+            // $("#bulkdelete-btn").click(function(){
+            //     let getselectedids = [];
 
-                // console.log($("input:checkbox[name=singlechecks]:checked"));
+            //     // console.log($("input:checkbox[name=singlechecks]:checked"));
 
-                $("input:checkbox[name='singlechecks']:checked").each(function(){
-                    getselectedids.push($(this).val());
-                });
+            //     $("input:checkbox[name='singlechecks']:checked").each(function(){
+            //         getselectedids.push($(this).val());
+            //     });
 
-                console.log(getselectedids);
+            //     console.log(getselectedids);
 
-                // $.ajax({
-                //     url:'{{route("cities.bulkdeletes")}}',
-                //     type:"DELETE",
-                //     dataType:"json",
-                //     data:{
-                //         selectedids:getselectedids,
-                //         _token:'{{csrf_token()}}'
-                //     },
-                //     success:function(response){
-                //         // console.log(response);
-                //         if(response){
-                //             $.each(getselectedids,function(key,val){
-                //                 $(`#delete_${val}`).remove();
-                //             });
-                //         }
-                //     },
-                //     error:function(response){
-                //         console.log('Error :',response);
-                //     }
-                // });
+            //     // $.ajax({
+            //     //     url:'{{route("cities.bulkdeletes")}}',
+            //     //     type:"DELETE",
+            //     //     dataType:"json",
+            //     //     data:{
+            //     //         selectedids:getselectedids,
+            //     //         _token:'{{csrf_token()}}'
+            //     //     },
+            //     //     success:function(response){
+            //     //         // console.log(response);
+            //     //         if(response){
+            //     //             $.each(getselectedids,function(key,val){
+            //     //                 $(`#delete_${val}`).remove();
+            //     //             });
+            //     //         }
+            //     //     },
+            //     //     error:function(response){
+            //     //         console.log('Error :',response);
+            //     //     }
+            //     // });
 
 
+            //     Swal.fire({
+            //         title: "Are you sure?",
+            //         text: `You won't be able to revert id !`,
+            //         icon: "warning",
+            //         showCancelButton: true,
+            //         confirmButtonColor: "#3085d6",
+            //         cancelButtonColor: "#d33",
+            //         confirmButtonText: "Yes, delete it!"
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+
+
+            //             // data remove
+            //             $.ajax({
+            //                 url:'{{route("cities.bulkdeletes")}}',
+            //                 type:"DELETE",
+            //                 dataType:"json",
+            //                 data:{
+            //                     selectedids:getselectedids,
+            //                     _token:'{{csrf_token()}}'
+            //                 },
+            //                 success:function(response){
+            //                     console.log(response); // 1
+
+            //                     if(response){
+            //                         // ui remove
+            //                         $.each(getselectedids,function(key,val){
+            //                             $(`#delete_${val}`).remove();
+            //                         });
+
+
+            //                         Swal.fire({
+            //                             title: "Deleted!",
+            //                             text: "Your file has been deleted.",
+            //                             icon: "success"
+            //                         });
+            //                     }
+            //                 },
+            //                 error:function(response){
+            //                     console.log("Error : ",response);
+            //                 }
+            //             });
+
+
+            //         }
+            //     });
+
+
+
+            // });
+
+            // End Bulk Delete
+
+
+            // Start OTP 
+            $("#generateotp-btn").on('click',function(){
+                
+                // loading box
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: `You won't be able to revert id !`,
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
+                    title: "Processing...",
+                    text: "Please wait while we send your OTP",
+                    allowOutsideClick:false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        
+                    }
+                });
+                // loading box
 
+                $.ajax({
+                    url:'/generateotps',
+                    type:"POST",
+                    success:function(response){
+                        // console.log(response);
 
-                        // data remove
-                        $.ajax({
-                            url:'{{route("cities.bulkdeletes")}}',
-                            type:"DELETE",
-                            dataType:"json",
-                            data:{
-                                selectedids:getselectedids,
-                                _token:'{{csrf_token()}}'
-                            },
-                            success:function(response){
-                                console.log(response); // 1
+                        // close loading box 
+                        Swal.close();
 
-                                if(response){
-                                    // ui remove
-                                    $.each(getselectedids,function(key,val){
-                                        $(`#delete_${val}`).remove();
-                                    });
+                        // $('#otpmessage').text("Your OTP Code is : "+ response.otp);
+                        $("#otpmodal").modal('show');
 
+                        startotptimer(60); // OTP will expires in 60s (1 minutes);
 
-                                    Swal.fire({
-                                        title: "Deleted!",
-                                        text: "Your file has been deleted.",
-                                        icon: "success"
-                                    });
-                                }
-                            },
-                            error:function(response){
-                                console.log("Error : ",response);
-                            }
-                        });
-
-
+                    },
+                    error:function(response){
+                        console.error("Error : ",response);
                     }
                 });
 
-                
-
             });
 
-            // End Bulk Delete 
+            // Method 1
+            // function startotptimer(duration){
+            //     // let minutes,seconds;
+            //     // let timer = duration;
+            //     // console.log(timer,minutes,seconds);
+
+            //     let timer = duration,minutes,seconds;
+            //     console.log(timer,minutes,seconds);
+
+            //     let setinv = setInterval(dectimer,1000);
+
+            //     function dectimer(){
+
+            //         minutes = parseInt(timer/60);
+            //         seconds = parseInt(timer%60);
+
+            //         minutes = minutes < 10 ? "0"+minutes : minutes;
+            //         seconds = seconds < 10 ? "0"+seconds : seconds;
+
+            //         $("#otptimer").text(`${minutes}:${seconds}`);
+
+            //         if(timer-- < 0){
+            //             clearInterval(setinv);
+            //             $("#otpmodal").modal('hide');
+            //         }
+
+            //     }
+            // }
+
+            // Method 2
+            function startotptimer(duration){
+                
+                timeleft = duration; // 60 seconds
+                $("#otptimer").text(timeleft);
+
+                let setinv = setInterval(dectimer,1000);
+
+                function dectimer(){
+                    timeleft--;
+
+                    $("#otptimer").text(timeleft);
+
+                    if(timeleft <= 0){
+                        clearInterval(setinv);
+                        $("#otpmodal").modal('hide');
+                    }
+                }
+
+            }
+
+            
+            $("#verifyform").on('submit',function(e){
+                e.preventDefault();
+                $.ajax({
+                    url:'/verifyopts',
+                    type:'POST',
+                    data:$(this).serialize(),
+                    success:function(response){
+
+                        if(response.message){
+
+                            let getselectedids = [];
+
+                            $("input:checkbox[name='singlechecks']:checked").each(function(){
+                                getselectedids.push($(this).val());
+                            });
+
+
+                            // start bulk delete
+                            $.ajax({
+                                url:'{{route("cities.bulkdeletes")}}',
+                                type:"DELETE",
+                                dataType:"json",
+                                data:{
+                                    selectedids:getselectedids,
+                                    _token:'{{csrf_token()}}'
+                                },
+                                success:function(response){
+                                    console.log(response); // 1
+
+                                    if(response){
+                                        // ui remove
+                                        $.each(getselectedids,function(key,val){
+                                            $(`#delete_${val}`).remove();
+                                        });
+
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Your file has been deleted.",
+                                            icon: "success"
+                                        });
+                                    }
+                                },
+                                error:function(response){
+                                    console.log("Error : ",response);
+                                }
+                            });
+                            // end bulk delete
+
+                            $("#otpmodal").modal('hide');
+
+                            console.log("Bulk Delete Successfully");
+                        }else{
+                            console.log("Invalid OTP");
+                        }
+
+                    },
+                    error:function(response){
+                        console.log("Error OTP : ",response);
+                    }
+                });
+            });
+            // End OTP
 
 
 

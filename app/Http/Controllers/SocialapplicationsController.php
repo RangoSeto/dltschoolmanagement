@@ -15,7 +15,14 @@ class SocialapplicationsController extends Controller
 {
     public function index()
     {
-        $socialapplications = Socialapplication::all();
+//        $socialapplications = Socialapplication::all();
+
+        $socialapplications = Socialapplication::where(function($query){
+            if($getname = request('filtername')){
+                $query->where('name',"LIKE",'%'.$getname.'%');
+            }
+        })->get();
+
         $statuses = Status::whereIn('id',[3,4])->get();
         return view('socialapplications.index',compact('socialapplications','statuses'));
     }
@@ -49,14 +56,12 @@ class SocialapplicationsController extends Controller
             return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
         }
 
-        
-        return redirect(route('socialapplications.index'));
     }
 
     public function edit(string $id)
     {
         $socialapplication = Socialapplication::findOrFail($id);
-        
+
         return response()->json($socialapplication);
     }
 
@@ -68,7 +73,7 @@ class SocialapplicationsController extends Controller
             'name' => ['required','max:50','unique:socialapplications,name,'.$id],
             'status_id' => ['required','in:3,4']
         ]);
-        
+
         $user = Auth::user();
         $user_id = $user['id'];
 
@@ -92,7 +97,7 @@ class SocialapplicationsController extends Controller
             return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
         }
 
-        
+
     }
 
     // public function destroy(string $id)
@@ -105,7 +110,7 @@ class SocialapplicationsController extends Controller
     // }
 
 
-    
+
     public function destroy(string $id)
     {
 
@@ -142,10 +147,17 @@ class SocialapplicationsController extends Controller
     public function fetchalldatas()
     {
         try{
-            $socialapplications = Socialapplication::all();
+//            $socialapplications = Socialapplication::all();
+
+            $socialapplications = Socialapplication::where(function($query){
+                if($getname = request()->input('query')){
+                    $query->where('name',"LIKE",'%'.$getname.'%');
+                }
+            })->get();
+
             return response()->json(['status'=>"success","data"=>$socialapplications]);
         }catch(Exception $e){
-            Log::error($e->getMessage()); 
+            Log::error($e->getMessage());
             return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
         }
     }

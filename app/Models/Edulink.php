@@ -16,6 +16,7 @@ class Edulink extends Model
         'classdate',
         'post_id',
         'url',
+        'counter',
         'user_id'
     ];
 
