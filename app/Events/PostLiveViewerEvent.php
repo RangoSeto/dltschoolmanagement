@@ -27,10 +27,10 @@ class PostLiveViewerEvent implements ShouldBroadcast
         return ['postliveviewer-channel_'.$this->postid];
     }
 
-    public function broadcastAs()
-    {
-        return 'postliveviewer-event';
-    }
+    // public function broadcastAs()
+    // {
+    //     return 'postliveviewer-event';
+    // }
 }
 
 

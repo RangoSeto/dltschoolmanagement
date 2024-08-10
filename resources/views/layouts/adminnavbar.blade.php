@@ -13,12 +13,24 @@
             <!-- search -->
             <!-- notify & userlogout -->
             <ul class="navbar-nav me-5 pe-5">
+
                 <!-- notify -->
-                <li class="nav-item dropdowns me-3">
+
+                <li class="nav-item me-2">
+                    <a href="{{route('carts.index')}}" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        @if(Auth::user()->carts()->exists())
+                            <sup class="badge bg-danger">{{Auth::user()->carts()->count()}}</sup>
+                        @endif
+                    </a>
+                </li>
+
+                <li class="nav-item dropdowns me-2">
                     <a href="javascript:void(0);" class="nav-link dropbtn" onclick="dropbtn(event)">
                         <i class="fas fa-bell"></i>
-                        <span class="badge bg-danger">{{auth()->user()->unreadNotifications->count()}}</span>
+                        <sup class="badge bg-danger">{{auth()->user()->unreadNotifications->count()}}</sup>
                     </a>
+
                     <div class="dropdown-contents mydropdowns">
                         
                         @if($userdata->unreadNotifications->count() > 0)

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\StatusesController;
 use App\Http\Controllers\Api\TagsController;
 use App\Http\Controllers\Api\TypesController;
 use App\Http\Controllers\Api\WarehousesController;
+use App\Http\Controllers\Api\RegionsController;
 
 
 
@@ -40,6 +41,11 @@ Route::get('/categoriessearch',[CategoriesController::class,'search']);
 Route::apiResource('cities',CitiesController::class,["as"=>"api"]);
 Route::put('citiesstatus',[CitiesController::class,'typestatus']);
 Route::get('/citiessearch',[CitiesController::class,'search']);
+Route::get('/filter/cities/{filter}',[CitiesController::class,'filterbycountryid']); // dynamic selectoption by countryid 
+
+Route::apiResource('region',RegionsController::class,["as"=>"api"]);
+Route::put('regionstatus',[RegionsController::class,'typestatus']);
+Route::get('/filter/regions/{filter}',[RegionsController::class,'filterbycityid']); // dynamic selectoption by cityid 
 
 
 Route::apiResource('days',DaysController::class,["as"=>"api"]);

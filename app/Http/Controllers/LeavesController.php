@@ -19,6 +19,7 @@ use Exception;
 
 use App\Models\Enroll;
 use App\Models\Leave;
+use App\Models\LeaveFile;
 use App\Models\Post;
 use App\Models\User;
 
@@ -70,19 +71,30 @@ class LeavesController extends Controller
         $leave->content = $request['content'];
         $leave->user_id = $user_id;
 
-        //Single Image Upload
-        if(file_exists($request['image'])){
-            $file = $request['image'];
-            $fname = $file->getClientOriginalName();
-            $imagenewname = uniqid($user_id).$leave['id'].$fname;
-            $file->move(public_path('assets/img/leaves/'),$imagenewname);
+        $leave->save();
+        
 
-            $filepath = 'assets/img/leaves/'. $imagenewname;
-            $leave->image = $filepath;
+        // Multi Images Upload
+        if($request->hasFile('images')){
+            foreach($request->file('images') as $image){
+                
+                $leavefile = new LeaveFile();
+                $leavefile->leave_id = $leave->id;
+
+                $file = $image;
+                $fname = $file->getClientOriginalName();
+                $imagenewname = uniqid($user_id).$leave['id'].$fname;
+                $file->move(public_path('assets/img/leaves/'),$imagenewname);
+
+                $filepath = 'assets/img/leaves/'.$imagenewname;
+                $leavefile->image = $filepath;
+
+                $leavefile->save();
+
+            }
         }
 
-        $leave->save();
-        session()->flash('success',"New Leave Created");
+        
 
         // $users = User::all();
         $tagperson = $leave->tagperson()->get();
@@ -92,6 +104,9 @@ class LeavesController extends Controller
         // in tagperson position it doesn't 1,2  it must be object
         Notification::send($tagperson,new LeaveNotify($leave->id,$leave->title,$studentid));
 
+
+        session()->flash('success',"New Leave Created");
+        
         return redirect(route('leaves.index'));
     }
 
@@ -141,29 +156,42 @@ class LeavesController extends Controller
         $leave->tag = $request['tag'];
         $leave->title = $request['title'];
         $leave->content = $request['content'];
+        $leave->save();
 
         // Remove Old Image
-        if($request->hasFile('image')){
-            $path = $leave->image;
+        $leavefiles = LeaveFile::where('leave_id',$leave->id)->get();
+        
+        if($request->hasFile('images')){
+            foreach($leavefiles as $leavefile){
+                $path = $leavefile->image;
 
-            if(File::exists($path)){
-                File::delete($path);
+                if(File::exists($path)){
+                    File::delete($path);
+                }
+            }
+            
+        }
+
+        // Multi Images Upload
+        if($request->hasFile('images')){
+            foreach($request->file('images') as $image){
+                
+                $leavefile = new LeaveFile();
+                $leavefile->leave_id = $leave->id;
+
+                $file = $image;
+                $fname = $file->getClientOriginalName();
+                $imagenewname = uniqid($user_id).$leave['id'].$fname;
+                $file->move(public_path('assets/img/leaves/'),$imagenewname);
+
+                $filepath = 'assets/img/leaves/'.$imagenewname;
+                $leavefile->image = $filepath;
+
+                $leavefile->save();
+
             }
         }
 
-
-        //Single Image Update
-        if($request->hasFile('image')){
-            $file = $request->file('image');
-            $fname = $file->getClientOriginalName();
-            $imagenewname = uniqid($user_id).$leave['id'].$fname;
-            $file->move(public_path('assets/img/leaves/'),$imagenewname);
-
-            $filepath = 'assets/img/leaves/'. $imagenewname;
-            $leave->image = $filepath;
-        }
-
-        $leave->save();
 
         session()->flash('success',"Update successfully");
         return redirect(route('leaves.index'));
@@ -174,10 +202,14 @@ class LeavesController extends Controller
         $leave = Leave::findOrFail($id);
 
         // Remove Old Image
-        $path = $leave->image;
-        if(File::exists($path)){
-            File::delete($path);
+        $leavefiles = LeaveFile::where('leave_id',$id)->get();
+        foreach($leavefiles as $leavefile){
+            $path = $leavefile->image;
+            if(File::exists($path)){
+                File::delete($path);
+            }
         }
+        
 
         $leave->delete();
         return redirect()->back();

@@ -105,4 +105,8 @@ class CitiesController extends Controller
 
         return CitiesResource::collection($city);
     }
+
+    public function filterbycountryid($filter){
+        return CitiesResource::collection(City::where('country_id',$filter)->where('status_id',3)->get());
+    }
 }

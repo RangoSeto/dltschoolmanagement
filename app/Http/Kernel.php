@@ -21,9 +21,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-
-
-        \App\Http\Middleware\PageViewMid::class
     ];
 
     /**
@@ -39,6 +36,12 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
+
+            \App\Http\Middleware\PageViewMid::class,
+            \App\Http\Middleware\PostViewDurationMid::class,
+            \App\Http\Middleware\OnOffUserStatusMid::class
+            
         ],
 
         'api' => [
@@ -67,5 +70,7 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        'validate.subscriptions' => \App\Http\Middleware\ValidateSubscriptionMid::class
     ];
 }

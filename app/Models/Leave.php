@@ -30,12 +30,17 @@ class Leave extends Model
         return $this->belongsTo(User::class);
     }
 
+
     public function post(){
         return $this->belongsTo(Post::class);
     }
 
     public function stage(){
         return $this->belongsTo(Stage::class);
+    }
+
+    public function leavefiles(){
+        return $this->hasMany(LeaveFile::class);
     }
 
     public function scopefilteronly($query){
