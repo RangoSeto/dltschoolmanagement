@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\StudentMailBox;
 use App\Models\Student;
+use App\Models\StudentPhone;
 use App\Models\Enroll;
 use App\Mail\MailBox;
 use App\Jobs\MailBoxJob;
@@ -57,6 +58,35 @@ class StudentsController extends Controller
         $student->user_id = $user_id;
         
         $student->save();
+
+
+        // Create New Student Phone
+
+        if(isset($request['phone'])){
+
+            // Method 1
+            // foreach($request['phone'] as $phone){
+            //     $phonedatas = [
+            //         'student_id'=>$student['id'],
+            //         'phone'=>$phone
+            //     ];
+
+            //     StudentPhone::insert($phonedatas);
+            // }
+
+
+            // Method 2
+            foreach($request->phone as $phone){
+                $student->studentphones()->create([
+                    'student_id'=>$student['id'],
+                    'phone'=>$phone
+                ]);
+            }
+
+        }
+
+
+
         return redirect(route('students.index'));
     }
 
@@ -72,14 +102,15 @@ class StudentsController extends Controller
     public function edit(string $id)
     {
         $student = Student::findOrFail($id);
-        return view('students.edit')->with('student',$student);
+        $studentphones = StudentPhone::where('student_id',$id)->get();
+        return view('students.edit')->with('student',$student)->with('studentphones',$studentphones);
     }
 
    
     public function update(Request $request, string $id)
     {
         $this->validate($request,[
-            'regnumber' => 'required|unique:students,regnumber,'.$id, // ဒီလိုရေးလိုက်တာက ဒီidကိုတော့ပြန်ရေးလို့ရတယ် ကျန်တာတေွထပ်လို့မရဘူး
+            // 'regnumber' => 'required|unique:students,regnumber,'.$id, // ဒီလိုရေးလိုက်တာက ဒီidကိုတော့ပြန်ရေးလို့ရတယ် ကျန်တာတေွထပ်လို့မရဘူး
             'firstname' => 'required',
             'lastname' => 'required',
             'remark' => 'max:1000'
@@ -89,7 +120,7 @@ class StudentsController extends Controller
         $user_id = $user['id'];
 
         $student = Student::findOrFail($id);
-        $student->regnumber = $request['regnumber'];
+        // $student->regnumber = $request['regnumber'];
         $student->firstname = $request['firstname'];
         $student->lastname = $request['lastname'];
         $student->slug = Str::slug($request['firstname']);
@@ -97,6 +128,44 @@ class StudentsController extends Controller
         $student->user_id = $user_id;
         
         $student->save();
+
+
+        // Create/Update New Student Phone
+
+        if(!empty($request['phone'])){
+
+            
+            foreach($request['newphone'] as $newphone){
+                $newphonedatas = [
+                    'student_id'=>$student['id'],
+                    'phone'=>$newphone
+                ];
+
+                StudentPhone::insert($newphonedatas);
+            }
+
+
+            // extend new phone and update existing phone
+            foreach($request['phone'] as $key=>$phone){
+                
+                StudentPhone::findOrFail($request['studentphoneid'][$key])->update([
+                    'phone'=>$phone
+                ]);
+            }
+
+        }else{
+
+            // update existing phone
+            foreach($request['phone'] as $key=>$phone){
+                
+                StudentPhone::findOrFail($request['studentphoneid'][$key])->update([
+                    'phone'=>$phone
+                ]);
+            }
+
+        }
+
+
         return redirect(route('students.index'));
     }
 

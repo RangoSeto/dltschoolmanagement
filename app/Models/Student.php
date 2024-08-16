@@ -75,6 +75,10 @@ class Student extends Model
         });
     }
 
+
+    public function studentphones(){
+        return $this->hasMany(StudentPhone::class);
+    }
     
 
 }

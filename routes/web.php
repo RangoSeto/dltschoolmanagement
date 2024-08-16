@@ -36,6 +36,7 @@ use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SocialapplicationsController;
 use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\StudentPhonesController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\StagesController;
 use App\Http\Controllers\StatusesController;
@@ -190,6 +191,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/studentsbulkdeletes',[StudentsController::class,'bulkdeletes'])->name('students.bulkdeletes');
     Route::post('compose/mailbox',[StudentsController::class,'mailbox'])->name('students.mailbox');
     Route::post('/students/quicksearch',[StudentsController::class,'quicksearch'])->name('students.quicksearch');
+
+    Route::get('/studentphones/delete/{id}',[StudentPhonesController::class,'destroy'])->name('studentphones.delete');
+
 
     Route::get('/subscribesexpired',[SubscriptionsController::class,'expired'])->name('subscriptions.expired');
 
