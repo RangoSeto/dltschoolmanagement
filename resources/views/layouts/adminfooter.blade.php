@@ -233,6 +233,41 @@
 			// End OnOffuser Search
 
 
+
+            // Start Dynamic Select Option 
+            // $(document).on('change','.country_id',function(){
+                                
+			// 	const getcountryid = $(this).val();
+			// 	// console.log(getcountryid);
+				
+			// 	let opforcity = "";
+			// 	let opforregion = "";
+				
+			// 	$.ajax({
+			// 		url:`/api/filter/cities/${getcountryid}`,
+			// 		type:"GET",
+			// 		dataType:'json',
+			// 		success:function(response){
+			// 			// console.log(response);
+					
+			// 			$('.city_id').empty();
+					
+			// 			opforcity += `<option selected disabled>Choose a city</option>`;
+					
+			// 			for(let x = 0; x < response.data.length; x++){
+			// 				opforcity += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
+			// 			}
+					
+			// 			$('.city_id').append(opforcity);
+			// 		},
+			// 		error:function(response){
+			// 			console.log("Error : ",response);
+			// 		}
+			// 	});
+			// });
+				
+			// End Dynamic Select Option 
+
 		</script>
     </body>
 </html>

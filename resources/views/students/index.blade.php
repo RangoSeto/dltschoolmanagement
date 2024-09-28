@@ -9,6 +9,7 @@
         <div class="col-md-12">
 
             <a href="{{route('students.create')}}" class="btn btn-primary btn-sm rounded-0"> Create</a>
+            <a href="{{route('leads.create')}}" class="btn btn-primary btn-sm rounded-0"> Create</a>
 
             <hr/>
 

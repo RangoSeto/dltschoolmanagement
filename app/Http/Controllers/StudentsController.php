@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Mail\StudentMailBox;
+use App\Models\Country;
+use App\Models\City;
+use App\Models\Gender;
 use App\Models\Student;
 use App\Models\StudentPhone;
 use App\Models\Enroll;
@@ -103,7 +106,10 @@ class StudentsController extends Controller
     {
         $student = Student::findOrFail($id);
         $studentphones = StudentPhone::where('student_id',$id)->get();
-        return view('students.edit')->with('student',$student)->with('studentphones',$studentphones);
+        $genders = Gender::orderBy('name','asc')->get();
+        $countries = Country::orderBy('name','asc')->where('status_id',3)->get();
+        $cities = City::orderBy('name','asc')->where('status_id',3)->get();
+        return view('students.edit')->with('student',$student)->with('studentphones',$studentphones)->with('genders',$genders)->with('countries',$countries)->with('cities',$cities);
     }
 
    
@@ -124,6 +130,11 @@ class StudentsController extends Controller
         $student->firstname = $request['firstname'];
         $student->lastname = $request['lastname'];
         $student->slug = Str::slug($request['firstname']);
+        $student->gender_id = $request['gender_id'];
+        $student->age = $request['age'];
+        $student->email = $request['email'];
+        $student->country_id = $request['country_id'];
+        $student->city_id = $request['city_id'];
         $student->remark = $request['remark'];
         $student->user_id = $user_id;
         

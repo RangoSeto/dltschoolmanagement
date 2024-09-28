@@ -2,6 +2,7 @@
 
 
 use App\Models\Attcodegenerators;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AnnouncementsController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\DaysController;
 use App\Http\Controllers\EdulinksController;
 use App\Http\Controllers\EnrollsController;
 use App\Http\Controllers\GendersController;
+use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\LeavesController;
 use App\Http\Controllers\OtpsController;
 use App\Http\Controllers\PackagesController;
@@ -63,6 +65,20 @@ use App\Http\Controllers\ChatsController;
 |
 */
 
+
+
+Route::get('/register/step1',[RegisteredUserController::class,'createstep1'])->name('register.step1');
+Route::post('/register/step1',[RegisteredUserController::class,'storestep1'])->name('register.storestep1');
+
+Route::get('/register/step2',[RegisteredUserController::class,'createstep2'])->name('register.step2')->middleware('check.registeration.step:step2');
+Route::post('/register/step2',[RegisteredUserController::class,'storestep2'])->name('register.storestep2');
+
+Route::get('/register/step3',[RegisteredUserController::class,'createstep3'])->name('register.step3');
+Route::post('/register/step3',[RegisteredUserController::class,'storestep3'])->name('register.storestep3')->middleware('check.registeration.step:step3');;
+
+
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -71,7 +87,9 @@ Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+
+// Route::middleware('auth')->
+Route::middleware(['auth','verified'])->group(function () {
 
     Route::get('/dashboards', [DashboardsController::class,'index'])->name('dashboards.index');
 
@@ -123,6 +141,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('genders',GendersController::class);
     Route::delete('/gendersbulkdeletes',[GendersController::class,'bulkdeletes'])->name('genders.bulkdeletes');
+
+    Route::resource('/leads',LeadsController::class);
+    Route::post('/leads/pipeline/{id}',[LeadsController::class,'converttostudent'])->name('leads.pipeline');
 
 
     Route::resource('leaves',LeavesController::class);

@@ -13,9 +13,21 @@ class Student extends Model
     protected $primarykey = 'id';
     protected $fillable = [
         'regnumber',
+        'image',
         'firstname',
         'lastname',
         'slug',
+        'dob',
+        'gender_id',
+        'age',
+        'email',
+        'country_id',
+        'city_id',
+        'region_id',
+        'township_id',
+        'address',
+        'religion_id',
+        'nationalid',
         'remark',
         'status_id',
         'user_id'
@@ -25,6 +37,31 @@ class Student extends Model
         return $this->belongsTo('App\Models\User'); //send all columns
     }
 
+    public function gender(){
+        return $this->belongsTo(Gender::class);
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
+
+    public function region(){
+        return $this->belongsTo(Region::class);
+    }
+
+    public function township(){
+        return $this->belongsTo(Township::class);
+    }
+
+    public function religion(){
+        return $this->belongsTo(Religion::class);
+    }
+
+    
     public function status(){
         // return $this->belongsTo(Status::class); //send all columns
         // return $this->belongsTo(Status::class)->select('name'); //send single columns

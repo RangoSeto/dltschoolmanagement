@@ -86,7 +86,7 @@
                                 </div>
 
                                 <div class="col-md-3 form-group">
-                                    <label for="status_id">Name <span class="text-danger">*</span></label>
+                                    <label for="status_id">Status <span class="text-danger">*</span></label>
                                     <select name="status_id" id="status_id" class="form-control form-control-sm rounded-0">
                                         @foreach($statuses as $status)
                                         <option value="{{$status['id']}}">{{$status['name']}}</option>
@@ -202,7 +202,7 @@
             function fetchalldatas(query=""){
                 $.ajax({
                     url:"{{url('api/warehousessearch')}}",
-{{--                    // url:"{{'api/warehouses'}}",--}}
+{{--                     url:"{{'api/warehouses'}}",--}}
                     {{--url:"{{route('api.warehouses.index')}}",--}}
                     method:"GET",
                     type:"json",
@@ -379,7 +379,7 @@
                             data:$("#formaction").serialize(), // name=kpay&status_id=4
                             success:function(response){
                                 // console.log(this.data); // name=kpay&status_id=3
-                                // console.log(response);s
+                                // console.log(response);
 
                                 const data = response.data;
 
