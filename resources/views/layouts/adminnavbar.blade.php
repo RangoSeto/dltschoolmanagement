@@ -116,10 +116,10 @@
                 <li class="nav-item dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown">
                         <span class="text-muted small">{{ $userdata['name'] }}</span>
-                        <img src="./assets/img/users/user1.jpg" class="rounded-circle" width="25" />
+                        <img src="{{asset($userdata->student['image'])}}" class="rounded-circle" width="25" />
                     </a>
                     <div class="dropdown-menu">
-                        <a href="javascript:void(0);" class="dropdown-item"><i class="fas fa-user fa-sm me-2 text-muted"></i>Profile</a>
+                        <a href="{{ route('profile.edit') }}" class="dropdown-item"><i class="fas fa-user fa-sm me-2 text-muted"></i>Profile</a>
                         <a href="javascript:void(0);" class="dropdown-item"><i class="fas fa-cogs fa-sm me-2 text-muted"></i>Settings</a>
                         <a href="javascript:void(0);" class="dropdown-item"><i class="fas fa-list fa-sm me-2 text-muted"></i>Activity Log</a>
                         <div class="dropdown-divider"></div>

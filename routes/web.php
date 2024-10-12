@@ -89,7 +89,7 @@ Route::get('/', function () {
 
 
 // Route::middleware('auth')->
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth','autologout','verified'])->group(function () {
 
     Route::get('/dashboards', [DashboardsController::class,'index'])->name('dashboards.index');
 
@@ -211,7 +211,8 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('students',StudentsController::class);
     Route::delete('/studentsbulkdeletes',[StudentsController::class,'bulkdeletes'])->name('students.bulkdeletes');
     Route::post('compose/mailbox',[StudentsController::class,'mailbox'])->name('students.mailbox');
-    Route::post('/students/quicksearch',[StudentsController::class,'quicksearch'])->name('students.quicksearch');
+    Route::post('/students/quicksearch',[StudentsController::class,'quicksearch'])->name(name: 'students.quicksearch');
+    Route::put('/students/{id}/profilepicture',[StudentsController::class,'updateprofilepicture'])->name('students.updateprofilepicture');
 
     Route::get('/studentphones/delete/{id}',[StudentPhonesController::class,'destroy'])->name('studentphones.delete');
 

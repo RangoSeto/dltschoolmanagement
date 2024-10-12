@@ -290,10 +290,10 @@
                     // console.log(response);
                     return response.json();
                 }).then(data=>{
-                    console.log(data);
+                    // console.log(data);
 
                     results = data.data;
-                    console.log(results);
+                    // console.log(results);
                 }).catch(err=>{
                     console.log(err);
                 });
@@ -302,7 +302,7 @@
 
             }
 
-            fetchalldatasbypaginate();
+            // fetchalldatasbypaginate();
 
             async function alldatastodom(){
                 const getresults = await fetchalldatasbypaginate();

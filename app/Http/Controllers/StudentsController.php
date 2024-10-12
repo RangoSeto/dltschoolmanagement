@@ -248,5 +248,43 @@ class StudentsController extends Controller
 
     }
 
+    public function updateprofilepicture(Request $request,$id){
+        $request->validate([
+            'image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $user = Auth::user();
+        $user_id = $user['id'];
+
+        $student = Student::findOrFail($id);
+
+        if($request->hasFile('image')){
+
+            //Single Image Update
+            $file = $request->file('image');
+            $fname = $file->getClientOriginalName();
+            $imagenewname = uniqid($user_id).$student['id'].$fname;
+            $file->move(public_path('assets/img/profile/'),$imagenewname);
+            $filepath = 'assets/img/profile/'. $imagenewname;
+            
+            // Remove Old Image
+            if($student->image){
+                $oldfilepath = public_path($student->image);
+    
+                if(file_exists($oldfilepath)){
+                    unlink($oldfilepath);
+                }
+            }
+            
+            $student->image = $filepath;
+            $student->save();
+            
+        }
+
+
+        return redirect()->back()->with('success','Upload Successfully');
+
+    }
+
 
 }

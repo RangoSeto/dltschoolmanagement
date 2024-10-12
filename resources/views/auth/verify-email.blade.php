@@ -42,7 +42,7 @@
     <div class="vh-100 d-flex justify-content-center align-items-center">
         <div class="col-3 bg-white p-4">
 
-            <h5>Email Verification</h5>
+            <h6>Email Verification</h6>
 
             <div class="row">
 

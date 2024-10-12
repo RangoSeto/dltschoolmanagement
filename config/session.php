@@ -31,9 +31,9 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => env('SESSION_LIFETIME', 120), // The session will be expire after 120 min of inactivity (envထဲမှာ မပါမှ ဒါကအလုပ်လုပ်မှာ )
 
-    'expire_on_close' => false,
+    'expire_on_close' => false, // keep the sesssion alive even if the user closed the browser
 
     /*
     |--------------------------------------------------------------------------

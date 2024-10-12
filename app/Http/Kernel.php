@@ -75,5 +75,7 @@ class Kernel extends HttpKernel
 
         'check.registeration.step' => \App\Http\Middleware\CheckRegistrationStepMid::class,
 
+        'autologout' => \App\Http\Middleware\AutoLogoutMid::class,
+
     ];
 }

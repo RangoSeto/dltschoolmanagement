@@ -103,6 +103,9 @@
         <!-- jqueryui css1 js1 -->
         <script src="{{asset('assets/libs/jquery-ui-1.13.2.custom/jquery-ui.min.js')}}" type="text/javascript"></script>
 
+		{{-- axios js1  --}}
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
         <!-- Google Chart -->
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 		<!-- chartjs js1 -->

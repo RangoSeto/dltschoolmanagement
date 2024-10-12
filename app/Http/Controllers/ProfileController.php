@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lead;
+use App\Models\Country;
+use App\Models\City;
+use App\Models\Gender;
+use App\Models\Student;
+use App\Models\StudentPhone;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,8 +22,28 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $lead = Lead::findOrFail($user->lead['id']);
+        $genders = Gender::orderBy('name','asc')->get();
+        $countries = Country::orderBy('name','asc')->where('status_id',3)->get();
+        $cities = City::orderBy('name','asc')->where('status_id',3)->get();
+
+        $student = null;
+        $studentphones = null;
+
+        if($lead->converted){
+            $student = Student::findOrFail($user->student['id']);
+            $studentphones = StudentPhone::where('student_id',$user->student['id'])->get();
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'lead' => $lead,
+            'genders' => $genders,
+            'countries' => $countries,
+            'cities' => $cities,
+            'student'=>$student,
+            'studentphones'=>$studentphones
         ]);
     }
 
